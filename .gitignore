@@ -28,3 +28,12 @@ site/
 .DS_Store
 .idea/
 .vscode/
+
+# Local backup of notebooks WITH outputs (never pushed)
+/modules-backup/
+# Generated run artifacts (not source)
+docs/modules/finetune_data/
+docs/modules/redteam_advanced_output/
+docs/modules/redteam_basic_output/
+docs/modules/eval_results.jsonl
+docs/modules/eval_test_data.jsonl

@@ -190,7 +190,8 @@ for item in response.output:
     if getattr(item, "type", None) == "mcp_list_tools":
         print(f"Server '{item.server_label}' exposes {len(item.tools)} tools:")
         for tool in item.tools[:5]:
-            print(f"  - {tool['name']}")
+            name = tool.name if hasattr(tool, "name") else tool["name"]
+            print(f"  - {name}")
         break"""),
     md("""\
 !!! note "Expected output"

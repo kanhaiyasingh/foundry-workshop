@@ -82,8 +82,8 @@ print("Search  :", SEARCH_ENDPOINT or "(not set — specialists run ungrounded)"
 ## 2. Build the Agent Framework client
 
 The Agent Framework wraps your Foundry project in an **`AzureAIAgentClient`**. We build it
-from the same `AIProjectClient` you've used all workshop — one credential, one project, one
-client — then hand that client to every agent we create. `Agent` is the framework's
+from the same **project endpoint + credential** you've used all workshop — one credential, one
+project, one client — then hand that client to every agent we create. `Agent` is the framework's
 unit: a model client + instructions + a name."""),
     code("""\
 from azure.identity import DefaultAzureCredential
@@ -96,8 +96,9 @@ project_client = AIProjectClient(endpoint=PROJECT_ENDPOINT, credential=credentia
 
 # One Agent Framework client, wired to the project; reused by every agent below.
 chat_client = AzureAIAgentClient(
-    project_client=project_client,
+    project_endpoint=PROJECT_ENDPOINT,
     model_deployment_name=CHAT_MODEL,
+    credential=credential,
 )
 
 print("project_client :", "ready")

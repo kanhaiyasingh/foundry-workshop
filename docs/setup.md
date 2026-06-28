@@ -32,8 +32,12 @@ In the **Microsoft Foundry (new)** portal:
    - an embeddings model — **`text-embedding-3-large`** (M4, M7),
    - *(optional)* a reasoning model — **`o4-mini`** (M1 notes, M13),
    - *(optional)* **`o3-deep-research`** (M8).
-3. Give your signed-in identity the **Azure AI Developer** role on the project so
-   `DefaultAzureCredential` can call it.
+3. Give your signed-in identity the **Foundry User** role (role ID
+   `53ca6127-db72-4b80-b1b0-d745d6d5456d`; formerly *Azure AI User*) on the
+   Foundry resource so `DefaultAzureCredential` can call it. Don't use *Azure AI
+   Developer* — despite the name, it's scoped to Azure ML / Foundry **hubs**, not
+   the Foundry projects these labs use. See **[RBAC prerequisites](modules/debug.md)**
+   for the full per-service access checklist (Search, Storage, Cosmos).
 
 !!! tip "Don't have a project yet? You can still follow along"
     Every lab shows its **Expected output** in prose, so you can read the whole
@@ -179,9 +183,9 @@ print(resp.output_text)
 Foundry is ready.
 ```
 
-If you see that line, you're set. (A `401`/`403` means your identity lacks the **Azure
-AI Developer** role; a `DefaultAzureCredential` error usually means you need
-`az login`.)
+If you see that line, you're set. (A `401`/`403` means your identity lacks the
+**Foundry User** role on the Foundry resource; a `DefaultAzureCredential` error
+usually means you need `az login`.)
 
 ---
 
