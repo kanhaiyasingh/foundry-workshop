@@ -190,11 +190,18 @@ sibling_link("09-evaluation", "M9") + """). Score a couple of responses for
     code("""\
 from azure.ai.evaluation import RelevanceEvaluator, AzureOpenAIModelConfiguration
 
+# The LLM-judge speaks the classic Azure OpenAI *deployments* route
+# (.../openai/deployments/<model>/chat/completions?api-version=...), which only
+# the **account** endpoint serves. Pointing it at PROJECT_ENDPOINT yields
+# "400 API version not supported", so derive the account endpoint by stripping
+# the "/api/projects/<project>" suffix (same trick as M9).
+AOAI_ENDPOINT = PROJECT_ENDPOINT.split("/api/projects/")[0] + "/"
+
 judge = AzureOpenAIModelConfiguration(
-    azure_endpoint=PROJECT_ENDPOINT,
+    azure_endpoint=AOAI_ENDPOINT,
     azure_deployment=CHAT_MODEL,
 )
-relevance = RelevanceEvaluator(model_config=judge)
+relevance = RelevanceEvaluator(model_config=judge, credential=credential)
 
 cases = [
     {"query": "Where is my order A-1001?", "response": run_support("Where is my order A-1001?")},
@@ -209,7 +216,13 @@ for c in cases:
     Where is my order A-1001?      relevance = 5/5
     What's the ETA on A-1002?      relevance = 4/5
     ```
-    Scores will vary. The point: you have a **number** to gate releases on, not a vibe."""),
+    Scores will vary. The point: you have a **number** to gate releases on, not a vibe.
+
+!!! warning "Judge endpoint: account, not project"
+    AI-assisted evaluators authenticate the judge via the classic Azure OpenAI
+    `?api-version=` route, which lives on the **account** endpoint — not the
+    `/api/projects/<project>` one. Use the stripped `AOAI_ENDPOINT` (and pass
+    `credential=` for AAD), exactly as in """ + sibling_link("09-evaluation", "M9") + """."""),
 
     md("""\
 ## 6. Make it observable
