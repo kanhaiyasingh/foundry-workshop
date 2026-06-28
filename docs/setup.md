@@ -48,7 +48,7 @@ In the **Microsoft Foundry (new)** portal:
 ## 2. Get the code & install
 
 ```bash
-git clone https://github.com/monuminu/foundry-workshop.git
+git clone https://github.com/kanhaiyasingh/foundry-workshop.git
 cd foundry-workshop
 ```
 
