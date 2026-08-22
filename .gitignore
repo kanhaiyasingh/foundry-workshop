@@ -1,39 +1,24 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.eggs/
-build/
-dist/
+# .NET
+**/bin/
+**/obj/
+TestResults/
+*.user
+*.suo
+*.nupkg
 
-# Virtual envs
-.venv/
-venv/
-env/
-
-# Environment / secrets
+# Environment and secrets
 .env
-.env.local
+.env.*
+!.env.example
 
-# Jupyter
-.ipynb_checkpoints/
-
-# MkDocs build output
+# Workshop output
+artifacts/
 site/
-
-# mkdocs-jupyter notebook conversion cache
 .cache/
 
-# OS / editor
-.DS_Store
-.idea/
+# IDE / OS
+.vs/
 .vscode/
-
-# Local backup of notebooks WITH outputs (never pushed)
-/modules-backup/
-# Generated run artifacts (not source)
-docs/modules/finetune_data/
-docs/modules/redteam_advanced_output/
-docs/modules/redteam_basic_output/
-docs/modules/eval_results.jsonl
-docs/modules/eval_test_data.jsonl
+.idea/
+.DS_Store
+Thumbs.db
