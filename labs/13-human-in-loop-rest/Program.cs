@@ -1,6 +1,14 @@
+// M13 objective: gate a sensitive tool call, then demonstrate raw REST, continuation, and SSE.
+// Prerequisites: PROJECT_ENDPOINT, a tool-capable CHAT_MODEL, az login, and Foundry access.
+// Check: dotnet run --project .\labs\13-human-in-loop-rest -- --check
+// Run:   dotnet run --project .\labs\13-human-in-loop-rest
+// Expect: fixed approved/rejected amounts, variable model prose, two REST turns, and a stream.
+// Note: the starter demonstrates both decisions automatically; it does not prompt for input.
+
 using System.Text.Json;
 using FoundryWorkshop.Shared;
 
+// Step 1: Run the same gated transfer loop once approved and once rejected.
 return await LabHost.RunAsync(
     "M13 - Human in the loop and REST",
     args,
@@ -11,6 +19,7 @@ return await LabHost.RunAsync(
         Console.WriteLine("\nRejection path:");
         Console.WriteLine(await RunTransferAsync(context, 9000, approve: false));
 
+        // Step 2: Send a raw single-shot Responses request and print its reconstructed text.
         using var single = await context.Rest.CreateResponseAsync(new
         {
             model = context.Config.ChatModel,
@@ -19,6 +28,7 @@ return await LabHost.RunAsync(
         var firstId = single.RootElement.GetProperty("id").GetString();
         Console.WriteLine($"\nREST single-shot: {JsonHelpers.GetOutputText(single.RootElement)}");
 
+        // Step 3: Continue with previous_response_id instead of resending the first story.
         using var followUp = await context.Rest.CreateResponseAsync(new
         {
             model = context.Config.ChatModel,
@@ -27,6 +37,7 @@ return await LabHost.RunAsync(
         });
         Console.WriteLine($"REST multi-turn: {JsonHelpers.GetOutputText(followUp.RootElement)}");
 
+        // Step 4: Render SSE output-text deltas immediately; story wording is variable.
         Console.Write("REST SSE stream: ");
         await foreach (var delta in context.Rest.StreamResponseTextAsync(new
         {
@@ -43,6 +54,7 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");
 
+// Step 5: Advertise the gated function, inspect its proposed arguments, and submit a decision.
 static async Task<string> RunTransferAsync(
     WorkshopContext context,
     decimal amount,
@@ -104,3 +116,6 @@ static async Task<string> RunTransferAsync(
     });
     return JsonHelpers.GetOutputText(completed.RootElement);
 }
+
+// Your Turn: replace the Boolean with an explicit approval prompt, add a second gated
+// operation, record a credential-free audit event, and count deltas for a longer stream.

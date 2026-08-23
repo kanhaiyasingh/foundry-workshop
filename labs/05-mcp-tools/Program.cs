@@ -1,5 +1,13 @@
+// M5 objective: attach a remote MCP server and verify tool discovery/invocation.
+// Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, a Foundry-reachable MCP_SERVER_URL,
+// and optional MCP_SERVER_LABEL.
+// Check: dotnet run --project .\labs\05-mcp-tools -- --check
+// Run:   dotnet run --project .\labs\05-mcp-tools
+// Expect: a positive MCP event count and an answer grounded in the server's tool results.
+
 using FoundryWorkshop.Shared;
 
+// Step 1: Read the remote endpoint and label without printing endpoint credentials.
 return await LabHost.RunAsync(
     "M5 - MCP tools",
     args,
@@ -10,6 +18,7 @@ return await LabHost.RunAsync(
             "Deploy an MCP server and copy its SSE/HTTP endpoint into .env.");
         var label = context.Config.Get("MCP_SERVER_LABEL", "project_tracker");
 
+        // Step 2: Attach MCP directly to a Responses request and ask a tool-requiring question.
         using var response = await context.Rest.CreateResponseAsync(new
         {
             model = context.Config.ChatModel,
@@ -26,6 +35,7 @@ return await LabHost.RunAsync(
             }
         });
 
+        // Step 3: Count discovery and call items; names, count, and answer vary by server/model.
         var output = response.RootElement.GetProperty("output");
         var toolItems = output.EnumerateArray()
             .Count(item => item.TryGetProperty("type", out var type) &&
@@ -36,3 +46,6 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",
     "MCP_SERVER_URL");
+
+// Your Turn: ask a question requiring two server tools, require ids in the answer, then
+// run with --require-approval and design the approval/resume path for write operations.

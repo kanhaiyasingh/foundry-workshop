@@ -1,9 +1,17 @@
+// M4 objective: index a small corpus, build a Foundry IQ knowledge base, and ground a response.
+// Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, SEARCH_ENDPOINT, Search contributor roles,
+// and optional SEARCH_CONNECTION for the final MCP-backed answer.
+// Check: dotnet run --project .\labs\04-grounding-rag -- --check
+// Run:   dotnet run --project .\labs\04-grounding-rag
+// Expect: direct search rows, a ready knowledge base, and either a grounded answer or setup hint.
+
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
 using Azure.Search.Documents.Models;
 using FoundryWorkshop.Shared;
 
+// Step 1: Use fixed workshop resource names so create-or-update supports reruns.
 return await LabHost.RunAsync(
     "M4 - Grounding and RAG with Foundry IQ",
     args,
@@ -16,6 +24,7 @@ return await LabHost.RunAsync(
             "SEARCH_ENDPOINT",
             "Grant Search Service Contributor and Search Index Data Contributor first.");
 
+        // Step 2: Create the compact searchable index used by the C# track.
         var indexClient = new SearchIndexClient(searchEndpoint, context.Credential);
         var index = new SearchIndex(indexName)
         {
@@ -28,6 +37,7 @@ return await LabHost.RunAsync(
         };
         await indexClient.CreateOrUpdateIndexAsync(index);
 
+        // Step 3: Upload the approved corpus; matching ids are replaced on rerun.
         var documents = new[]
         {
             new SearchDocument
@@ -52,6 +62,7 @@ return await LabHost.RunAsync(
         var searchClient = indexClient.GetSearchClient(indexName);
         await searchClient.UploadDocumentsAsync(documents);
 
+        // Step 4: Retrieve directly and inspect ids, titles, and content before involving a model.
         Console.WriteLine("Direct retrieval:");
         var search = await searchClient.SearchAsync<SearchDocument>(
             "How does Foundry ground agents?",
@@ -62,6 +73,7 @@ return await LabHost.RunAsync(
                 $"  [{result.Document["id"]}] {result.Document["title"]}: {result.Document["content"]}");
         }
 
+        // Step 5: Create the knowledge source and knowledge base over the same index.
         var sourceParameters = new SearchIndexKnowledgeSourceParameters(indexName);
         sourceParameters.SearchFields.Add(new SearchIndexFieldReference("content"));
         sourceParameters.SourceDataFields.Add(new SearchIndexFieldReference("title"));
@@ -80,6 +92,7 @@ return await LabHost.RunAsync(
         await indexClient.CreateOrUpdateKnowledgeBaseAsync(knowledgeBase);
         Console.WriteLine($"Knowledge base '{knowledgeBaseName}' is ready.");
 
+        // Step 6: If configured, attach the KB over MCP and require a cited, grounded answer.
         if (context.Config.IsConfigured("SEARCH_CONNECTION"))
         {
             var mcpUrl = $"{searchEndpoint.ToString().TrimEnd('/')}/knowledgebases/{knowledgeBaseName}" +
@@ -111,3 +124,6 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",
     "SEARCH_ENDPOINT");
+
+// Your Turn: add a document and URL field, require citations for supported claims, and
+// confirm an out-of-corpus question produces an explicit "I don't know."

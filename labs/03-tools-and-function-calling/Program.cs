@@ -1,6 +1,14 @@
+// M3 objective: execute a host-side function-call loop and optionally use Code Interpreter.
+// Prerequisites: PROJECT_ENDPOINT, a tool-capable CHAT_MODEL, and optional Code Interpreter access.
+// Check: dotnet run --project .\labs\03-tools-and-function-calling -- --check
+// Run:   dotnet run --project .\labs\03-tools-and-function-calling
+// Optional: add --code-interpreter for the separate hosted statistics request.
+// Expect: a printed mock tool execution, a grounded answer, and optional statistics.
+
 using System.Text.Json;
 using FoundryWorkshop.Shared;
 
+// Step 1: Declare the strict function schema the model uses to propose arguments.
 return await LabHost.RunAsync(
     "M3 - Tools and function calling",
     args,
@@ -24,6 +32,7 @@ return await LabHost.RunAsync(
             }
         };
 
+        // Step 2: Ask a question that should require the weather function.
         using var initial = await context.Rest.CreateResponseAsync(new
         {
             model = context.Config.ChatModel,
@@ -38,6 +47,7 @@ return await LabHost.RunAsync(
                 "The model returned no function call. Confirm the deployment supports Responses tools.");
         }
 
+        // Step 3: Validate model-proposed arguments and execute deterministic C# host logic.
         var outputs = new List<object>();
         foreach (var call in calls)
         {
@@ -56,6 +66,7 @@ return await LabHost.RunAsync(
             outputs.Add(new { type = "function_call_output", call_id = callId, output = result });
         }
 
+        // Step 4: Return tool output to the open response and print the model's synthesis.
         using var completed = await context.Rest.CreateResponseAsync(new
         {
             model = context.Config.ChatModel,
@@ -64,6 +75,7 @@ return await LabHost.RunAsync(
         });
         Console.WriteLine(JsonHelpers.GetOutputText(completed.RootElement));
 
+        // Step 5: Optionally run hosted code over inline data; numeric formatting may vary.
         if (context.HasFlag("--code-interpreter"))
         {
             using var codeResult = await context.Rest.CreateResponseAsync(new
@@ -84,3 +96,6 @@ return await LabHost.RunAsync(
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");
+
+// Your Turn: add a second function that can be called in the same turn, then remove
+// get_weather and confirm the model no longer presents the mock weather as grounded fact.

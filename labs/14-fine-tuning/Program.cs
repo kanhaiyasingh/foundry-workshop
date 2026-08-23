@@ -1,7 +1,16 @@
+// M14 objective: prepare validated SFT data, compare illustrative baselines, and optionally submit.
+// Prerequisites: offline mode needs only .NET; submission needs PROJECT_ENDPOINT,
+// FINE_TUNE_MODEL, quota, supported regional capacity, and file/job permissions.
+// Run: dotnet run --project .\labs\14-fine-tuning
+// Submit: dotnet run --project .\labs\14-fine-tuning -- --submit [--monitor]
+// Expect offline: 10 training rows, 2 validation rows, and clearly precomputed scores.
+// Submission ids, status, duration, and final service payload are variable.
+
 using System.Net.Http.Headers;
 using System.Text.Json;
 using FoundryWorkshop.Shared;
 
+// Step 1: Generate the narrow incident-severity task and split it into train/validation JSONL.
 return await LabHost.RunAsync(
     "M14 - Fine-tuning and distillation",
     args,
@@ -15,10 +24,12 @@ return await LabHost.RunAsync(
         await WriteJsonlAsync(trainingPath, examples[..10]);
         await WriteJsonlAsync(validationPath, examples[10..]);
 
+        // Step 2: Validate chat roles/content and print the deterministic row counts.
         var trainingRows = ValidateSftFile(trainingPath);
         var validationRows = ValidateSftFile(validationPath);
         Console.WriteLine($"Validated SFT data: {trainingRows} training rows, {validationRows} validation rows.");
 
+        // Step 3: Show the comparison shape; these bundled values are not live measurements.
         var comparison = new[]
         {
             new { model = "Teacher (precomputed)", accuracy = 0.91, costIndex = 10.0 },
@@ -38,6 +49,7 @@ return await LabHost.RunAsync(
             return;
         }
 
+        // Step 4: Upload both files and submit a two-epoch supervised Foundry job.
         context.Config.Require("PROJECT_ENDPOINT");
         var model = context.Config.Require(
             "FINE_TUNE_MODEL",
@@ -67,6 +79,7 @@ return await LabHost.RunAsync(
                     ?? throw new InvalidOperationException("Fine-tuning submission returned no job id.");
         Console.WriteLine($"Submitted job {jobId}: {submitted.RootElement.GetProperty("status").GetString()}");
 
+        // Step 5: Optionally poll every 15 seconds until a terminal service status.
         if (context.HasFlag("--monitor"))
         {
             await MonitorJobAsync(context, jobId);
@@ -77,6 +90,7 @@ return await LabHost.RunAsync(
         }
     });
 
+// The balanced examples adapt the notebook's domain-classification task for this C# lab.
 static TrainingExample[] BuildExamples()
 {
     var rows = new (string Report, string Label)[]
@@ -220,3 +234,6 @@ static async Task MonitorJobAsync(WorkshopContext context, string jobId)
 internal sealed record TrainingExample(IReadOnlyList<TrainingMessage> Messages);
 
 internal sealed record TrainingMessage(string Role, string Content);
+
+// Your Turn: generate more balanced teacher-labelled data, compare another supported
+// student with the same held-out evaluator, and never include held-out rows in training.

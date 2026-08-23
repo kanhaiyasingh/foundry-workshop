@@ -1,6 +1,13 @@
+// M8 objective: let a reasoning model search and fetch a bounded corpus, then cite a report.
+// Prerequisites: PROJECT_ENDPOINT and a tool-capable RESEARCH_MODEL deployment.
+// Check: dotnet run --project .\labs\08-deep-research -- --check
+// Run:   dotnet run --project .\labs\08-deep-research
+// Expect: model-dependent search/fetch iterations ending in a report with [doc-id] citations.
+
 using System.Text.Json;
 using FoundryWorkshop.Shared;
 
+// Step 1: Define the only documents the research model is allowed to use.
 var corpus = new Dictionary<string, (string Title, string Text)>
 {
     ["doc-001"] = (
@@ -17,6 +24,7 @@ var corpus = new Dictionary<string, (string Title, string Text)>
         "Linformer reduces self-attention complexity through low-rank projections.")
 };
 
+// Step 2: Configure the bounded loop and expose search/fetch schemas to the model.
 return await LabHost.RunAsync(
     "M8 - Deep research",
     args,
@@ -55,11 +63,14 @@ return await LabHost.RunAsync(
                 }
             }
         };
+
+        // Step 3: Ask the fixed comparison question and retain response state across iterations.
         object input =
             "Compare the few-shot learning approaches in this corpus. Search broadly, fetch relevant papers, " +
             "and cite document ids. Say explicitly when the corpus cannot support a claim.";
         string? previousResponseId = null;
 
+        // Step 4: Execute proposed calls in C# until the model concludes or reaches the safety cap.
         for (var iteration = 1; iteration <= maxIterations; iteration++)
         {
             using var response = await context.Rest.CreateResponseAsync(new
@@ -78,6 +89,7 @@ return await LabHost.RunAsync(
             Console.WriteLine($"Iteration {iteration}: {calls.Length} tool call(s)");
             if (calls.Length == 0)
             {
+                // The final wording and path vary; success requires supported [doc-id] citations.
                 Console.WriteLine(JsonHelpers.GetOutputText(response.RootElement));
                 return;
             }
@@ -115,6 +127,7 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "RESEARCH_MODEL");
 
+// Step 5: Search returns only matching corpus records; an empty result marks the boundary.
 static object SearchCorpus(
     string query,
     IReadOnlyDictionary<string, (string Title, string Text)> corpus)
@@ -135,9 +148,13 @@ static object SearchCorpus(
         .ToArray();
 }
 
+// Step 6: Fetch returns one approved document or an explicit not-found result.
 static object FetchDocument(
     string id,
     IReadOnlyDictionary<string, (string Title, string Text)> corpus) =>
     corpus.TryGetValue(id, out var document)
         ? new { id, title = document.Title, text = document.Text }
         : new { id, error = "Document not found." };
+
+// Your Turn: add doc-005, ask a cross-topic question, then lower maxIterations and test
+// an out-of-corpus prompt to observe the cost/quality and knowledge-boundary behavior.

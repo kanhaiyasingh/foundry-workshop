@@ -1,6 +1,14 @@
+// M11 objective: layer local checks, a managed blocklist, Prompt Shields, and an RAI policy.
+// Prerequisites: local mode needs only .NET; --apply needs ARM account settings and rights;
+// --apply --deploy also needs CHAT_MODEL, GUARDRAIL_MODEL_VERSION, quota, and region support.
+// Run: dotnet run --project .\labs\11-guardrails
+// Apply: dotnet run --project .\labs\11-guardrails -- --apply [--deploy]
+// Expect: three local labels, then optional accepted policy/deployment messages.
+
 using System.Text.RegularExpressions;
 using FoundryWorkshop.Shared;
 
+// Step 1: Define the regex PII entries and plain-text business terms.
 var piiPatterns = new Dictionary<string, string>
 {
     ["pii-ssn"] = @"\b\d{3}-\d{2}-\d{4}\b",
@@ -16,6 +24,7 @@ var blockedTerms = new Dictionary<string, string>
     ["comp-globex"] = "Globex Financial"
 };
 
+// Step 2: Exercise allowed, PII, and injection probes locally before creating resources.
 return await LabHost.RunAsync(
     "M11 - Guardrails",
     args,
@@ -39,6 +48,7 @@ return await LabHost.RunAsync(
             return;
         }
 
+        // Step 3: Resolve the ARM target only for --apply; no Azure call occurs in local mode.
         var subscription = context.Config.Require("AZURE_SUBSCRIPTION_ID");
         var resourceGroup = context.Config.Require(
             "AZURE_RESOURCE_GROUP",
@@ -53,6 +63,7 @@ return await LabHost.RunAsync(
             $"https://management.azure.com/subscriptions/{subscription}/resourceGroups/{resourceGroup}" +
             $"/providers/Microsoft.CognitiveServices/accounts/{account}";
 
+        // Step 4: Create the shared blocklist, then add regex and text entries.
         await PutArmAsync(
             context,
             $"{accountPath}/raiBlocklists/{blocklistName}?api-version={apiVersion}",
@@ -73,6 +84,7 @@ return await LabHost.RunAsync(
                 new { properties = new { pattern = item.Value, isRegex = false } });
         }
 
+        // Step 5: Apply standard safety filters, Prompt Shields, and the custom blocklist.
         await PutArmAsync(
             context,
             $"{accountPath}/raiPolicies/{policyName}?api-version={apiVersion}",
@@ -100,6 +112,7 @@ return await LabHost.RunAsync(
             });
         Console.WriteLine($"Applied RAI policy '{policyName}' to account '{account}'.");
 
+        // Step 6: Optionally submit a dedicated deployment pinned to the new policy.
         if (context.HasFlag("--deploy"))
         {
             var modelVersion = context.Config.Require(
@@ -128,6 +141,7 @@ return await LabHost.RunAsync(
         }
     });
 
+// Local classification is illustrative; managed service responses have their own filter payload.
 static string Classify(
     string text,
     IEnumerable<string> piiPatterns,
@@ -153,3 +167,6 @@ static async Task PutArmAsync(WorkshopContext context, string uri, object body)
 {
     using var _ = await context.Rest.SendArmJsonAsync(HttpMethod.Put, new Uri(uri), body);
 }
+
+// Your Turn: add a forbidden term, tune one supported threshold, then test one benign
+// and one blocked prompt against the provisioned deployment and inspect the filter result.

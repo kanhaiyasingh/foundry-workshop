@@ -1,7 +1,14 @@
+// M7 objective: route fixed questions to focused Agent Framework specialists.
+// Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, and a model that follows label-only routing.
+// Check: dotnet run --project .\labs\07-multi-agent-orchestration -- --check
+// Run:   dotnet run --project .\labs\07-multi-agent-orchestration
+// Expect: POLICY -> policy-specialist and TECHNICAL -> technical-specialist, with variable prose.
+
 using FoundryWorkshop.Shared;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
+// Step 1: Adapt Foundry Responses to IChatClient and define the label-only router.
 return await LabHost.RunAsync(
     "M7 - Multi-agent orchestration",
     args,
@@ -16,6 +23,8 @@ return await LabHost.RunAsync(
                 """,
             name: "router",
             description: "Routes employee questions to a specialist.");
+
+        // Step 2: Define policy, technical, and general specialists over the shared model.
         AIAgent policyAgent = new ChatClientAgent(
             chatClient,
             instructions: """
@@ -38,12 +47,14 @@ return await LabHost.RunAsync(
             name: "general-specialist",
             description: "Handles uncategorized requests.");
 
+        // Step 3: Use fixed questions so routing behavior is easy to compare across runs.
         var questions = new[]
         {
             "Can I work from another country for two weeks?",
             "Why does my Foundry project endpoint return 403 after az login?"
         };
 
+        // Step 4: Dispatch exact known labels and expose all other output through the fallback.
         foreach (var question in questions)
         {
             var routing = await router.RunAsync(question);
@@ -65,3 +76,6 @@ return await LabHost.RunAsync(
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");
+
+// Your Turn: add a SECURITY specialist and route, probe an ambiguous fallback question,
+// then ground one specialist with the M4 knowledge base without changing dispatch.

@@ -1,5 +1,14 @@
+// M5b objective: ground a workplace question in permission-aware Work IQ data over MCP.
+// Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, WORKIQ_MCP_URL, Microsoft 365 licensing,
+// tenant consent, a supported delegated/OBO connection, and optional WORKIQ_MCP_LABEL.
+// Check: dotnet run --project .\labs\05b-work-iq -- --check
+// Run:   dotnet run --project .\labs\05b-work-iq
+// Input: optionally pass one quoted workplace question after --.
+// Expect: a positive Work IQ MCP event count and a permission-trimmed, sourced answer.
+
 using FoundryWorkshop.Shared;
 
+// Step 1: Resolve the Work IQ endpoint, label, and default or participant-supplied question.
 return await LabHost.RunAsync(
     "M5b - Work IQ",
     args,
@@ -12,6 +21,7 @@ return await LabHost.RunAsync(
         var prompt = context.Args.FirstOrDefault(arg => !arg.StartsWith("--", StringComparison.Ordinal))
                      ?? "Brief me on today's meetings, unread launch messages, and my action items. Cite each source.";
 
+        // Step 2: Attach Work IQ as a read-oriented MCP tool and send the workplace question.
         using var response = await context.Rest.CreateResponseAsync(new
         {
             model = context.Config.ChatModel,
@@ -28,6 +38,7 @@ return await LabHost.RunAsync(
             }
         });
 
+        // Step 3: Require evidence of MCP participation rather than accepting an ungrounded answer.
         var workIqCalls = response.RootElement.GetProperty("output").EnumerateArray()
             .Count(item => item.TryGetProperty("type", out var type) &&
                            type.GetString() is "mcp_call" or "mcp_list_tools");
@@ -37,6 +48,7 @@ return await LabHost.RunAsync(
                 "The response contained no Work IQ MCP call. Confirm admin consent, user licensing, and MCP connectivity.");
         }
 
+        // Step 4: Review variable tenant data and verify every source respects caller permissions.
         Console.WriteLine($"Work IQ MCP events: {workIqCalls}");
         Console.WriteLine(JsonHelpers.GetOutputText(response.RootElement));
         Console.WriteLine("The returned content is permission-trimmed to the signed-in Microsoft 365 user.");
@@ -44,3 +56,6 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",
     "WORKIQ_MCP_URL");
+
+// Your Turn: ask a cross-signal question and request action items with owners, deadlines,
+// and source links; verify every cited item is already accessible to the signed-in user.

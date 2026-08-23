@@ -1,6 +1,13 @@
+// M9 objective: score a small dataset with deterministic C# checks and an optional LLM judge.
+// Prerequisites: offline mode needs only .NET; --cloud needs PROJECT_ENDPOINT and CHAT_MODEL.
+// Run: dotnet run --project .\labs\09-evaluation
+// Cloud: dotnet run --project .\labs\09-evaluation -- --cloud
+// Expect: row-level PASS/FAIL output, a 2/3 lexical baseline, and a JSONL artifact.
+
 using System.Text.Json;
 using FoundryWorkshop.Shared;
 
+// Step 1: Define two correct rows and one deliberately incorrect embedding answer.
 return await LabHost.RunAsync(
     "M9 - Evaluation",
     args,
@@ -30,6 +37,7 @@ return await LabHost.RunAsync(
         var outputPath = Path.Combine(outputDirectory, "m09-evaluation-results.jsonl");
         await using var writer = new StreamWriter(outputPath, false);
 
+        // Step 2: Apply deterministic coverage and groundedness checks to each row.
         var passed = 0;
         foreach (var record in records)
         {
@@ -38,6 +46,7 @@ return await LabHost.RunAsync(
             double? judgeScore = null;
             string? judgeReason = null;
 
+            // Step 3: Optionally request a structured 1-5 quality judgment from Foundry.
             if (context.HasFlag("--cloud"))
             {
                 context.Config.Require(
@@ -79,6 +88,7 @@ return await LabHost.RunAsync(
                 judgeReason = judged.RootElement.GetProperty("reason").GetString();
             }
 
+            // Step 4: Persist every score; judge values vary and appear in the JSONL artifact.
             var rowPassed = coverage >= 0.5 && grounded >= 0.5 && (judgeScore is null || judgeScore >= 3);
             passed += rowPassed ? 1 : 0;
             var result = new
@@ -95,6 +105,7 @@ return await LabHost.RunAsync(
             Console.WriteLine($"{(rowPassed ? "PASS" : "FAIL")} coverage={coverage:P0} grounded={grounded:P0} - {record.Query}");
         }
 
+        // The offline 2/3 result exposes lexical-metric limits; it is not a factual-accuracy claim.
         Console.WriteLine($"Passed {passed}/{records.Length}. Results: {outputPath}");
         Console.WriteLine(
             "C# has no stable azure-ai-evaluation equivalent; deterministic evaluators run offline and --cloud adds a real Foundry LLM judge.");
@@ -128,3 +139,6 @@ internal sealed record EvalRecord(
     string Context,
     string Response,
     string ExpectedTerms);
+
+// Your Turn: improve the checks so the factual error fails, add citation/length rules,
+// then tighten a threshold and use the pass rate as a regression gate.

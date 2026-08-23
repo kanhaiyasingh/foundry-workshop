@@ -1,3 +1,10 @@
+// M10 objective: export a Foundry response span and optionally enable continuous evaluation.
+// Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, APP_INSIGHTS_CONN_STRING, and ingestion access.
+// Check: dotnet run --project .\labs\10-observability -- --check
+// Run:   dotnet run --project .\labs\10-observability
+// Optional: add --online-eval to create an enabled preview rule that persists server-side.
+// Expect: one model answer, a trace-flush confirmation, and optionally a rule response.
+
 using System.Diagnostics;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using FoundryWorkshop.Shared;
@@ -7,6 +14,7 @@ using OpenTelemetry.Trace;
 const string sourceName = "FoundryWorkshop.M10";
 using var activitySource = new ActivitySource(sourceName);
 
+// Step 1: Configure Azure Monitor before starting the activity or creating the request.
 return await LabHost.RunAsync(
     "M10 - Observability and tracing",
     args,
@@ -20,6 +28,7 @@ return await LabHost.RunAsync(
             .AddAzureMonitorTraceExporter(options => options.ConnectionString = connectionString)
             .Build();
 
+        // Step 2: Start a client span and record operational tags, not prompt/response content.
         using var activity = activitySource.StartActivity(
             "foundry.responses",
             ActivityKind.Client);
@@ -27,6 +36,7 @@ return await LabHost.RunAsync(
         activity?.SetTag("gen_ai.request.model", context.Config.ChatModel);
         activity?.SetTag("workshop.lab", "M10");
 
+        // Step 3: Make the traced call; answer wording and response length are variable.
         using var response = await context.Rest.CreateResponseAsync(new
         {
             model = context.Config.ChatModel,
@@ -37,10 +47,12 @@ return await LabHost.RunAsync(
         activity?.SetTag("gen_ai.response.length", text.Length);
         Console.WriteLine(text);
 
+        // Step 4: Flush locally, then allow normal ingestion delay before querying App Insights.
         activity?.Stop();
         tracerProvider.ForceFlush();
         Console.WriteLine("Trace exported to Application Insights without recording prompt or response content.");
 
+        // Step 5: Optionally create an eval and persistent response-completed rule.
         if (context.HasFlag("--online-eval"))
         {
             using var evaluation = await context.Rest.SendProjectJsonAsync(
@@ -91,3 +103,6 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",
     "APP_INSIGHTS_CONN_STRING");
+
+// Your Turn: add a function tool with a child activity, query model/length tags, and
+// create a second evaluation rule; disable workshop rules when the exercise is complete.

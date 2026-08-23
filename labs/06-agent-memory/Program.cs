@@ -1,5 +1,14 @@
+// M6 objective: create a preview memory store, extract preferences, and recall them by scope.
+// Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, EMBEDDING_MODEL, Memory API availability,
+// and permission to manage project memory stores.
+// Check: dotnet run --project .\labs\06-agent-memory -- --check
+// Run:   dotnet run --project .\labs\06-agent-memory
+// Expect: the named store, then raw recalled-memory JSON containing extracted preferences.
+// Caution: each run deletes and recreates the fixed workshop store name.
+
 using FoundryWorkshop.Shared;
 
+// Step 1: Fix the preview API version, workshop store name, and isolated user scope.
 return await LabHost.RunAsync(
     "M6 - Agent memory",
     args,
@@ -9,6 +18,7 @@ return await LabHost.RunAsync(
         const string storeName = "csharp-workshop-dev-preferences";
         const string scope = "workshop-user-dana";
 
+        // Step 2: Reset and create the memory store with chat extraction and embedding retrieval.
         await context.Rest.SendProjectJsonAsync(
             HttpMethod.Delete,
             $"memory_stores/{storeName}?api-version={apiVersion}");
@@ -35,6 +45,7 @@ return await LabHost.RunAsync(
             });
         Console.WriteLine($"Created memory store: {store.RootElement.GetProperty("name").GetString()}");
 
+        // Step 3: Submit a fixed conversation whose durable C# preferences should be extracted.
         var conversation = new object[]
         {
             new
@@ -57,6 +68,7 @@ return await LabHost.RunAsync(
         var updateId = update.RootElement.GetProperty("update_id").GetString()
                        ?? throw new InvalidOperationException("Memory update returned no update_id.");
 
+        // Step 4: Poll asynchronous extraction and surface terminal service failures.
         for (var attempt = 0; attempt < 30; attempt++)
         {
             using var status = await context.Rest.SendProjectJsonAsync(
@@ -76,6 +88,7 @@ return await LabHost.RunAsync(
             await Task.Delay(TimeSpan.FromSeconds(2));
         }
 
+        // Step 5: Search the same scope; response shape and extracted wording can vary.
         using var recalled = await context.Rest.SendProjectJsonAsync(
             HttpMethod.Post,
             $"memory_stores/{storeName}:search_memories?api-version={apiVersion}",
@@ -93,3 +106,6 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",
     "EMBEDDING_MODEL");
+
+// Your Turn: add a preference and recall it under this scope, then search under a
+// different scope and confirm the original user's memory is absent.
