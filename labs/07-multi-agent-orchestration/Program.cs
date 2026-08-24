@@ -23,6 +23,8 @@ return await LabHost.RunAsync(
                 """,
             name: "router",
             description: "Routes employee questions to a specialist.");
+        // Expected result:
+        //   Router ready with POLICY, TECHNICAL, and GENERAL classifications.
 
         // Step 2: Define policy, technical, and general specialists over the shared model.
         AIAgent policyAgent = new ChatClientAgent(
@@ -46,6 +48,10 @@ return await LabHost.RunAsync(
             instructions: "You are a concise workplace concierge.",
             name: "general-specialist",
             description: "Handles uncategorized requests.");
+        // Expected result:
+        //   policy-specialist
+        //   technical-specialist
+        //   general-specialist
 
         // Step 3: Use fixed questions so routing behavior is easy to compare across runs.
         var questions = new[]
@@ -53,6 +59,8 @@ return await LabHost.RunAsync(
             "Can I work from another country for two weeks?",
             "Why does my Foundry project endpoint return 403 after az login?"
         };
+        // Expected result:
+        //   Two workshop questions ready for routing.
 
         // Step 4: Dispatch exact known labels and expose all other output through the fallback.
         foreach (var question in questions)
@@ -70,9 +78,18 @@ return await LabHost.RunAsync(
             Console.WriteLine($"Route: {label} -> {specialist.Name}");
             Console.WriteLine(answer.Text);
         }
+        // Expected output:
+        //   Question: Can I work from another country for two weeks?
+        //   Route: POLICY -> policy-specialist
+        //   <model-generated policy answer>
+        //   Question: Why does my Foundry project endpoint return 403 after az login?
+        //   Route: TECHNICAL -> technical-specialist
+        //   <model-generated technical answer>
 
         Console.WriteLine(
             "\nThe router and specialists are Microsoft Agent Framework ChatClientAgent instances over one Foundry client.");
+        // Expected output:
+        //   The router and specialists are Microsoft Agent Framework ChatClientAgent instances over one Foundry client.
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");

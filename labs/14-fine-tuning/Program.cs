@@ -23,11 +23,16 @@ return await LabHost.RunAsync(
         var examples = BuildExamples();
         await WriteJsonlAsync(trainingPath, examples[..10]);
         await WriteJsonlAsync(validationPath, examples[10..]);
+        // Expected result:
+        //   training.jsonl: 10 rows
+        //   validation.jsonl: 2 rows
 
         // Step 2: Validate chat roles/content and print the deterministic row counts.
         var trainingRows = ValidateSftFile(trainingPath);
         var validationRows = ValidateSftFile(validationPath);
         Console.WriteLine($"Validated SFT data: {trainingRows} training rows, {validationRows} validation rows.");
+        // Expected output:
+        //   Validated SFT data: 10 training rows, 2 validation rows.
 
         // Step 3: Show the comparison shape; these bundled values are not live measurements.
         var comparison = new[]
@@ -41,11 +46,18 @@ return await LabHost.RunAsync(
         {
             Console.WriteLine($"  {item.model,-34} accuracy={item.accuracy:P0} relative-cost={item.costIndex:F1}");
         }
+        // Expected output:
+        //   Local comparison (illustrative workshop benchmark, not a live measurement):
+        //     Teacher (precomputed)              accuracy=91% relative-cost=10.0
+        //     Small base (precomputed)           accuracy=46% relative-cost=1.0
+        //     Fine-tuned student (precomputed)   accuracy=72% relative-cost=1.0
 
         if (!context.HasFlag("--submit"))
         {
             Console.WriteLine(
                 $"\nData is ready at {outputDirectory}. Add --submit to upload it and create a Foundry SFT job.");
+            // Expected output:
+            //   Data is ready at <absolute artifacts\m14 path>. Add --submit to upload it and create a Foundry SFT job.
             return;
         }
 
@@ -57,6 +69,8 @@ return await LabHost.RunAsync(
         var trainingFileId = await UploadFileAsync(context, trainingPath);
         var validationFileId = await UploadFileAsync(context, validationPath);
         Console.WriteLine($"Uploaded training={trainingFileId}, validation={validationFileId}");
+        // Expected output:
+        //   Uploaded training=<file-id>, validation=<file-id>
 
         var jobsUri = new Uri(
             context.Config.AccountUri,
@@ -78,6 +92,8 @@ return await LabHost.RunAsync(
         var jobId = submitted.RootElement.GetProperty("id").GetString()
                     ?? throw new InvalidOperationException("Fine-tuning submission returned no job id.");
         Console.WriteLine($"Submitted job {jobId}: {submitted.RootElement.GetProperty("status").GetString()}");
+        // Expected output:
+        //   Submitted job <job-id>: <service status>
 
         // Step 5: Optionally poll every 15 seconds until a terminal service status.
         if (context.HasFlag("--monitor"))
@@ -87,6 +103,8 @@ return await LabHost.RunAsync(
         else
         {
             Console.WriteLine("Re-run with --submit --monitor to poll a newly submitted job to a terminal state.");
+            // Expected output:
+            //   Re-run with --submit --monitor to poll a newly submitted job to a terminal state.
         }
     });
 
@@ -221,9 +239,13 @@ static async Task MonitorJobAsync(WorkshopContext context, string jobId)
             FoundryRestClient.CognitiveServicesScope);
         var status = job.RootElement.GetProperty("status").GetString() ?? "unknown";
         Console.WriteLine($"Job status: {status}");
+        // Expected output:
+        //   Job status: <service status>
         if (status is "succeeded" or "failed" or "cancelled")
         {
             Console.WriteLine(job.RootElement);
+            // Expected output:
+            //   <resource-specific final fine-tuning job JSON>
             return;
         }
 

@@ -30,6 +30,8 @@ return await LabHost.RunAsync(
                     options.ConnectionString = context.Config.Require("APP_INSIGHTS_CONN_STRING"))
                 .Build();
         }
+        // Expected result:
+        //   Tracing ready when APP_INSIGHTS_CONN_STRING is configured.
 
         using var activity = activitySource.StartActivity("contoso-support.run", ActivityKind.Client);
         activity?.SetTag("gen_ai.system", "microsoft_foundry");
@@ -65,6 +67,8 @@ return await LabHost.RunAsync(
                 }
             }
         };
+        // Expected result:
+        //   Tools defined: get_order_status, search_support_policy
 
         // Step 3: Ask the fixed damaged-order question and require at least one tool call.
         using var first = await context.Rest.CreateResponseAsync(new
@@ -82,6 +86,8 @@ return await LabHost.RunAsync(
         {
             throw new InvalidOperationException("Capstone expected tool calls but the model returned none.");
         }
+        // Expected result:
+        //   The response contains one or more function calls.
 
         // Step 4: Execute model-proposed calls in trusted C# against deterministic workshop data.
         var outputs = new List<object>();
@@ -112,6 +118,9 @@ return await LabHost.RunAsync(
                 output = JsonSerializer.Serialize(result)
             });
         }
+        // Expected result:
+        //   Order C-1007: delivered, delivered_on 2026-08-20, carrier_case not-opened.
+        //   Policy: damaged goods may be returned within 30 days; open a carrier case first.
 
         // Step 5: Return tool outputs and require the model to compose a cited support answer.
         using var final = await context.Rest.CreateResponseAsync(new
@@ -122,6 +131,8 @@ return await LabHost.RunAsync(
         });
         var answer = JsonHelpers.GetOutputText(final.RootElement);
         Console.WriteLine(answer);
+        // Expected output:
+        //   <model-generated answer describing delivered status, carrier case, and [support-policy]>
 
         // Step 6: Apply three transparent release checks; model wording may vary, score should be 3/3.
         var checks = new Dictionary<string, bool>
@@ -134,6 +145,10 @@ return await LabHost.RunAsync(
         {
             Console.WriteLine($"{(check.Value ? "PASS" : "FAIL")} {check.Key}");
         }
+        // Expected output:
+        //   PASS mentions delivered state
+        //   PASS cites policy
+        //   PASS mentions carrier case
 
         // Step 7: Add tool/evaluation tags to the optional trace and flush it.
         activity?.SetTag("capstone.tool_call_count", calls.Length);
@@ -146,6 +161,8 @@ return await LabHost.RunAsync(
             (context.Config.IsConfigured("APP_INSIGHTS_CONN_STRING")
                 ? "Trace exported."
                 : "Set APP_INSIGHTS_CONN_STRING to export the trace."));
+        // Expected output:
+        //   Capstone score: 3/3. <Trace exported. | Set APP_INSIGHTS_CONN_STRING to export the trace.>
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");

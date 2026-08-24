@@ -17,6 +17,8 @@ return await LabHost.RunAsync(
         const string apiVersion = "2025-11-15-preview";
         const string storeName = "csharp-workshop-dev-preferences";
         const string scope = "workshop-user-dana";
+        // Expected result:
+        //   Store 'csharp-workshop-dev-preferences' and scope 'workshop-user-dana' ready.
 
         // Step 2: Reset and create the memory store with chat extraction and embedding retrieval.
         await context.Rest.SendProjectJsonAsync(
@@ -44,8 +46,10 @@ return await LabHost.RunAsync(
                 }
             });
         Console.WriteLine($"Created memory store: {store.RootElement.GetProperty("name").GetString()}");
+            // Expected output:
+            //   Created memory store: csharp-workshop-dev-preferences
 
-        // Step 3: Submit a fixed conversation whose durable C# preferences should be extracted.
+            // Step 3: Submit a fixed conversation whose durable C# preferences should be extracted.
         var conversation = new object[]
         {
             new
@@ -67,6 +71,8 @@ return await LabHost.RunAsync(
             new { scope, items = conversation, update_delay = 0 });
         var updateId = update.RootElement.GetProperty("update_id").GetString()
                        ?? throw new InvalidOperationException("Memory update returned no update_id.");
+        // Expected result:
+        //   Memory update accepted for scope 'workshop-user-dana'.
 
         // Step 4: Poll asynchronous extraction and surface terminal service failures.
         for (var attempt = 0; attempt < 30; attempt++)
@@ -87,6 +93,8 @@ return await LabHost.RunAsync(
 
             await Task.Delay(TimeSpan.FromSeconds(2));
         }
+        // Expected result:
+        //   Memory extraction completes.
 
         // Step 5: Search the same scope; response shape and extracted wording can vary.
         using var recalled = await context.Rest.SendProjectJsonAsync(
@@ -102,6 +110,10 @@ return await LabHost.RunAsync(
         Console.WriteLine(recalled.RootElement.ToString());
         Console.WriteLine(
             "Preview note: the Memory API is REST-backed because Azure.AI.Projects 2.0 has no stable memory client.");
+        // Expected output:
+        //   Recalled memories:
+        //   { <model-dependent extracted C#, concise, code-first, VS Code, and Windows preferences> }
+        //   Preview note: the Memory API is REST-backed because Azure.AI.Projects 2.0 has no stable memory client.
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",

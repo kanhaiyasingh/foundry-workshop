@@ -31,6 +31,8 @@ return await LabHost.RunAsync(
                 "It is the stateful API used for models, agents, tools, and streaming.",
                 "stateful agents tools streaming")
         };
+        // Expected result:
+        //   Three evaluation rows ready; the embedding-dimension response is intentionally wrong.
 
         var outputDirectory = Path.Combine(Environment.CurrentDirectory, "artifacts");
         Directory.CreateDirectory(outputDirectory);
@@ -43,6 +45,8 @@ return await LabHost.RunAsync(
         {
             var coverage = Coverage(record.Response, record.ExpectedTerms);
             var grounded = Grounded(record.Response, record.Context);
+            // Expected result:
+            //   Deterministic coverage and groundedness scores computed for this row.
             double? judgeScore = null;
             string? judgeReason = null;
 
@@ -86,6 +90,9 @@ return await LabHost.RunAsync(
                 using var judged = JsonDocument.Parse(JsonHelpers.GetOutputText(judge.RootElement));
                 judgeScore = judged.RootElement.GetProperty("score").GetDouble();
                 judgeReason = judged.RootElement.GetProperty("reason").GetString();
+                // Expected result with --cloud:
+                //   LLM judge score: <model-dependent 1-5 value>
+                //   LLM judge reason: <model-generated short reason>
             }
 
             // Step 4: Persist every score; judge values vary and appear in the JSONL artifact.
@@ -103,12 +110,19 @@ return await LabHost.RunAsync(
             };
             await writer.WriteLineAsync(JsonSerializer.Serialize(result, JsonHelpers.Web));
             Console.WriteLine($"{(rowPassed ? "PASS" : "FAIL")} coverage={coverage:P0} grounded={grounded:P0} - {record.Query}");
+            // Expected output:
+            //   <PASS|FAIL> coverage=<percentage> grounded=<percentage> - <query>
         }
 
         // The offline 2/3 result exposes lexical-metric limits; it is not a factual-accuracy claim.
         Console.WriteLine($"Passed {passed}/{records.Length}. Results: {outputPath}");
         Console.WriteLine(
             "C# has no stable azure-ai-evaluation equivalent; deterministic evaluators run offline and --cloud adds a real Foundry LLM judge.");
+        // Expected output:
+        //   FAIL coverage=40% grounded=12% - What does DefaultAzureCredential do?
+        //   PASS coverage=100% grounded=50% - How large are text-embedding-3-large vectors?
+        //   PASS coverage=100% grounded=60% - What does the Responses API provide?
+        //   Passed 2/3. Results: <absolute artifact path>
     });
 
 static double Coverage(string response, string expectedTerms)

@@ -27,6 +27,9 @@ return await LabHost.RunAsync(
             .AddSource(sourceName)
             .AddAzureMonitorTraceExporter(options => options.ConnectionString = connectionString)
             .Build();
+        // Expected result:
+        //   OpenTelemetry configured with Azure Monitor.
+        //   TracerProvider ready.
 
         // Step 2: Start a client span and record operational tags, not prompt/response content.
         using var activity = activitySource.StartActivity(
@@ -35,6 +38,8 @@ return await LabHost.RunAsync(
         activity?.SetTag("gen_ai.system", "microsoft_foundry");
         activity?.SetTag("gen_ai.request.model", context.Config.ChatModel);
         activity?.SetTag("workshop.lab", "M10");
+        // Expected result:
+        //   foundry.responses span started with content recording disabled.
 
         // Step 3: Make the traced call; answer wording and response length are variable.
         using var response = await context.Rest.CreateResponseAsync(new
@@ -46,11 +51,15 @@ return await LabHost.RunAsync(
         activity?.SetTag("gen_ai.response.id", response.RootElement.GetProperty("id").GetString());
         activity?.SetTag("gen_ai.response.length", text.Length);
         Console.WriteLine(text);
+        // Expected output:
+        //   <model-generated one-sentence explanation of an OpenTelemetry span>
 
         // Step 4: Flush locally, then allow normal ingestion delay before querying App Insights.
         activity?.Stop();
         tracerProvider.ForceFlush();
         Console.WriteLine("Trace exported to Application Insights without recording prompt or response content.");
+        // Expected output:
+        //   Trace exported to Application Insights without recording prompt or response content.
 
         // Step 5: Optionally create an eval and persistent response-completed rule.
         if (context.HasFlag("--online-eval"))
@@ -93,11 +102,15 @@ return await LabHost.RunAsync(
                     enabled = true
                 });
             Console.WriteLine($"Continuous evaluation rule: {rule.RootElement}");
+            // Expected output with --online-eval:
+            //   Continuous evaluation rule: <resource-specific JSON>
         }
         else
         {
             Console.WriteLine(
                 "Add --online-eval to create the preview continuous relevance rule (it remains active until deleted).");
+            // Expected output without --online-eval:
+            //   Add --online-eval to create the preview continuous relevance rule (it remains active until deleted).
         }
     },
     "PROJECT_ENDPOINT",

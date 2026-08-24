@@ -20,11 +20,16 @@ return await LabHost.RunAsync(
         var projectClient = context.CreateProjectClient();
         var responsesClient = projectClient.ProjectOpenAIClient
             .GetProjectResponsesClientForModel(config.ChatModel);
+        // Expected result:
+        //   project_client : ready
+        //   responses_client : ready
 
         // Step 2: Send a deterministic first prompt; the expected text is "Foundry is ready."
         ResponseResult first = await responsesClient.CreateResponseAsync(
             "Reply with exactly: Foundry is ready.");
         Console.WriteLine($"Response: {first.GetOutputText()}");
+        // Expected output:
+        //   Response: Foundry is ready.
 
         // Step 3: Call the account-scoped embeddings route and inspect the returned vector size.
         var embeddingsUri = new Uri(
@@ -40,6 +45,8 @@ return await LabHost.RunAsync(
             .GetProperty("data")[0]
             .GetProperty("embedding");
         Console.WriteLine($"Embedding dimensions: {vector.GetArrayLength()}");
+        // Expected output:
+        //   Embedding dimensions: <deployment-dependent value>
 
         // Step 4: Render SSE deltas immediately; wording varies, but text should appear incrementally.
         Console.Write("Streaming: ");
@@ -54,6 +61,9 @@ return await LabHost.RunAsync(
         }
 
         Console.WriteLine();
+        // Expected output:
+        //   Streaming: <model-generated short explanation of the Responses API>
+        //   The sentence prints incrementally, a few tokens at a time.
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",

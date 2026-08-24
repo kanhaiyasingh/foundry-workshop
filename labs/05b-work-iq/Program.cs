@@ -20,6 +20,8 @@ return await LabHost.RunAsync(
         var label = context.Config.Get("WORKIQ_MCP_LABEL", "work_iq");
         var prompt = context.Args.FirstOrDefault(arg => !arg.StartsWith("--", StringComparison.Ordinal))
                      ?? "Brief me on today's meetings, unread launch messages, and my action items. Cite each source.";
+        // Expected result:
+        //   Work IQ configuration and workplace question ready.
 
         // Step 2: Attach Work IQ as a read-oriented MCP tool and send the workplace question.
         using var response = await context.Rest.CreateResponseAsync(new
@@ -37,6 +39,8 @@ return await LabHost.RunAsync(
                 }
             }
         });
+        // Expected result:
+        //   Foundry connects to Work IQ and discovers its permission-aware tools.
 
         // Step 3: Require evidence of MCP participation rather than accepting an ungrounded answer.
         var workIqCalls = response.RootElement.GetProperty("output").EnumerateArray()
@@ -47,11 +51,17 @@ return await LabHost.RunAsync(
             throw new InvalidOperationException(
                 "The response contained no Work IQ MCP call. Confirm admin consent, user licensing, and MCP connectivity.");
         }
+        // Expected result:
+        //   The response contains at least one Work IQ MCP event.
 
         // Step 4: Review variable tenant data and verify every source respects caller permissions.
         Console.WriteLine($"Work IQ MCP events: {workIqCalls}");
         Console.WriteLine(JsonHelpers.GetOutputText(response.RootElement));
         Console.WriteLine("The returned content is permission-trimmed to the signed-in Microsoft 365 user.");
+        // Expected output:
+        //   Work IQ MCP events: <positive count>
+        //   <permission-dependent workplace answer with source references>
+        //   The returned content is permission-trimmed to the signed-in Microsoft 365 user.
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",

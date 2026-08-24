@@ -26,6 +26,8 @@ return await LabHost.RunAsync(
                 Answer in at most three sentences and end with one practical next step.
                 """
         };
+        // Expected result:
+        //   Agent definition 'workshop-concierge' ready.
 
         // Step 2: Publish the definition and inspect the service-assigned version and id.
         var versionResult = await projectClient.AgentAdministrationClient
@@ -34,6 +36,8 @@ return await LabHost.RunAsync(
                 new ProjectsAgentVersionCreationOptions(definition));
         ProjectsAgentVersion version = versionResult.Value;
         Console.WriteLine($"Created {version.Name} version {version.Version} ({version.Id})");
+        // Expected output:
+        //   Created workshop-concierge version <version> (<agent-version-id>)
 
         // Step 3: Create one conversation and bind a Responses client to the named agent.
         var conversation = await projectClient.ProjectOpenAIClient
@@ -42,16 +46,22 @@ return await LabHost.RunAsync(
         var responses = projectClient.ProjectOpenAIClient.GetProjectResponsesClientForAgent(
             defaultAgent: agentName,
             defaultConversationId: conversation.Value.Id);
+        // Expected result:
+        //   Conversation and agent Responses client ready.
 
         // Step 4: Invoke the stored instructions without resending them in the request.
         ResponseResult first = await responses.CreateResponseAsync(
             "What is the difference between a model call and an agent?");
         Console.WriteLine(first.GetOutputText());
+        // Expected output:
+        //   <model-generated explanation in the voice defined by the stored instructions>
 
         // Step 5: Reuse the conversation; wording varies, but the follow-up should use prior context.
         ResponseResult followUp = await responses.CreateResponseAsync(
             "Summarize that in five words.");
         Console.WriteLine($"Follow-up: {followUp.GetOutputText()}");
+        // Expected output:
+        //   Follow-up: <model-generated five-word summary>
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");

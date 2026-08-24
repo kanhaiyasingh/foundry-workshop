@@ -31,6 +31,8 @@ return await LabHost.RunAsync(
                 additionalProperties = false
             }
         };
+        // Expected result:
+        //   Declared tool: get_weather
 
         // Step 2: Ask a question that should require the weather function.
         using var initial = await context.Rest.CreateResponseAsync(new
@@ -46,6 +48,8 @@ return await LabHost.RunAsync(
             throw new InvalidOperationException(
                 "The model returned no function call. Confirm the deployment supports Responses tools.");
         }
+        // Expected result:
+        //   The response contains at least one get_weather function call.
 
         // Step 3: Validate model-proposed arguments and execute deterministic C# host logic.
         var outputs = new List<object>();
@@ -63,6 +67,9 @@ return await LabHost.RunAsync(
                 observedBy = "workshop mock service"
             });
             Console.WriteLine($"Executing {name}({city}) -> {result}");
+            // Expected output:
+            //   Executing get_weather(Seattle) -> {"city":"Seattle","temperatureC":18,
+            //   "conditions":"light rain","observedBy":"workshop mock service"}
             outputs.Add(new { type = "function_call_output", call_id = callId, output = result });
         }
 
@@ -74,6 +81,8 @@ return await LabHost.RunAsync(
             input = outputs
         });
         Console.WriteLine(JsonHelpers.GetOutputText(completed.RootElement));
+        // Expected output:
+        //   <model-generated answer using the Seattle tool result>
 
         // Step 5: Optionally run hosted code over inline data; numeric formatting may vary.
         if (context.HasFlag("--code-interpreter"))
@@ -88,10 +97,14 @@ return await LabHost.RunAsync(
                 }
             });
             Console.WriteLine($"Code Interpreter: {JsonHelpers.GetOutputText(codeResult.RootElement)}");
+            // Expected output with --code-interpreter:
+            //   Code Interpreter: <model-generated mean and population standard deviation>
         }
         else
         {
             Console.WriteLine("Add --code-interpreter to run the hosted Code Interpreter example.");
+            // Expected output without --code-interpreter:
+            //   Add --code-interpreter to run the hosted Code Interpreter example.
         }
     },
     "PROJECT_ENDPOINT",

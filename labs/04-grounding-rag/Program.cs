@@ -20,6 +20,8 @@ return await LabHost.RunAsync(
         const string indexName = "foundry-workshop-facts";
         const string knowledgeSourceName = "foundry-workshop-facts-source";
         const string knowledgeBaseName = "foundry-workshop-facts-kb";
+        // Expected result:
+        //   Index, knowledge-source, and knowledge-base names ready.
         var searchEndpoint = context.Config.RequireUri(
             "SEARCH_ENDPOINT",
             "Grant Search Service Contributor and Search Index Data Contributor first.");
@@ -36,6 +38,8 @@ return await LabHost.RunAsync(
             }
         };
         await indexClient.CreateOrUpdateIndexAsync(index);
+        // Expected result:
+        //   Index 'foundry-workshop-facts' ready (3 fields).
 
         // Step 3: Upload the approved corpus; matching ids are replaced on rerun.
         var documents = new[]
@@ -61,6 +65,8 @@ return await LabHost.RunAsync(
         };
         var searchClient = indexClient.GetSearchClient(indexName);
         await searchClient.UploadDocumentsAsync(documents);
+        // Expected result:
+        //   Uploaded 3 documents to 'foundry-workshop-facts'.
 
         // Step 4: Retrieve directly and inspect ids, titles, and content before involving a model.
         Console.WriteLine("Direct retrieval:");
@@ -72,6 +78,9 @@ return await LabHost.RunAsync(
             Console.WriteLine(
                 $"  [{result.Document["id"]}] {result.Document["title"]}: {result.Document["content"]}");
         }
+        // Expected output:
+        //   Direct retrieval:
+        //     [<id>] <retrieved title>: <retrieved content>
 
         // Step 5: Create the knowledge source and knowledge base over the same index.
         var sourceParameters = new SearchIndexKnowledgeSourceParameters(indexName);
@@ -91,6 +100,8 @@ return await LabHost.RunAsync(
         };
         await indexClient.CreateOrUpdateKnowledgeBaseAsync(knowledgeBase);
         Console.WriteLine($"Knowledge base '{knowledgeBaseName}' is ready.");
+        // Expected output:
+        //   Knowledge base 'foundry-workshop-facts-kb' is ready.
 
         // Step 6: If configured, attach the KB over MCP and require a cited, grounded answer.
         if (context.Config.IsConfigured("SEARCH_CONNECTION"))
@@ -114,11 +125,15 @@ return await LabHost.RunAsync(
                 }
             });
             Console.WriteLine($"Grounded answer: {JsonHelpers.GetOutputText(response.RootElement)}");
+            // Expected output:
+            //   Grounded answer: <model-generated answer citing retrieved content>
         }
         else
         {
             Console.WriteLine(
                 "Set SEARCH_CONNECTION to the Foundry RemoteTool connection name to run the grounded agent call.");
+            // Expected output:
+            //   Set SEARCH_CONNECTION to the Foundry RemoteTool connection name to run the grounded agent call.
         }
     },
     "PROJECT_ENDPOINT",

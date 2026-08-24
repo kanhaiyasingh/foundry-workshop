@@ -17,6 +17,8 @@ return await LabHost.RunAsync(
             "MCP_SERVER_URL",
             "Deploy an MCP server and copy its SSE/HTTP endpoint into .env.");
         var label = context.Config.Get("MCP_SERVER_LABEL", "project_tracker");
+        // Expected result:
+        //   MCP server configuration ready with label '<configured label>'.
 
         // Step 2: Attach MCP directly to a Responses request and ask a tool-requiring question.
         using var response = await context.Rest.CreateResponseAsync(new
@@ -34,6 +36,8 @@ return await LabHost.RunAsync(
                 }
             }
         });
+        // Expected result:
+        //   Foundry connects to the MCP server and discovers its tools.
 
         // Step 3: Count discovery and call items; names, count, and answer vary by server/model.
         var output = response.RootElement.GetProperty("output");
@@ -42,6 +46,9 @@ return await LabHost.RunAsync(
                            type.GetString() is "mcp_call" or "mcp_list_tools");
         Console.WriteLine($"MCP events: {toolItems}");
         Console.WriteLine(JsonHelpers.GetOutputText(response.RootElement));
+        // Expected output:
+        //   MCP events: <positive count>
+        //   <model-generated answer based on the configured server's tools>
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL",

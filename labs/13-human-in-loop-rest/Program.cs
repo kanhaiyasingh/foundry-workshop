@@ -18,6 +18,13 @@ return await LabHost.RunAsync(
         Console.WriteLine(await RunTransferAsync(context, 500, approve: true));
         Console.WriteLine("\nRejection path:");
         Console.WriteLine(await RunTransferAsync(context, 9000, approve: false));
+        // Expected output:
+        //   Approval path:
+        //   [APPROVED] $500.00
+        //   <model-generated confirmation that the transfer completed>
+        //   Rejection path:
+        //   [REJECTED] $9000.00
+        //   <model-generated explanation that the transfer was rejected>
 
         // Step 2: Send a raw single-shot Responses request and print its reconstructed text.
         using var single = await context.Rest.CreateResponseAsync(new
@@ -27,6 +34,8 @@ return await LabHost.RunAsync(
         });
         var firstId = single.RootElement.GetProperty("id").GetString();
         Console.WriteLine($"\nREST single-shot: {JsonHelpers.GetOutputText(single.RootElement)}");
+        // Expected output:
+        //   REST single-shot: <model-generated one-line story about astronaut Mira>
 
         // Step 3: Continue with previous_response_id instead of resending the first story.
         using var followUp = await context.Rest.CreateResponseAsync(new
@@ -36,6 +45,8 @@ return await LabHost.RunAsync(
             input = "Continue the story in one line without repeating the first line."
         });
         Console.WriteLine($"REST multi-turn: {JsonHelpers.GetOutputText(followUp.RootElement)}");
+        // Expected output:
+        //   REST multi-turn: <model-generated one-line continuation>
 
         // Step 4: Render SSE output-text deltas immediately; story wording is variable.
         Console.Write("REST SSE stream: ");
@@ -50,6 +61,9 @@ return await LabHost.RunAsync(
         }
 
         Console.WriteLine();
+        // Expected output:
+        //   REST SSE stream: <model-generated two-sentence lighthouse-keeper story>
+        //   The story prints incrementally as deltas arrive.
     },
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");
@@ -100,6 +114,10 @@ static async Task<string> RunTransferAsync(
             ? $"APPROVED: transferred ${requestedAmount:F2} from ACC-001 to ACC-002."
             : "REJECTED: the human operator declined this transfer; no funds moved.";
         Console.WriteLine($"{(approve ? "[APPROVED]" : "[REJECTED]")} ${requestedAmount:F2}");
+        // Expected output:
+        //   [APPROVED] $500.00
+        //   or
+        //   [REJECTED] $9000.00
         outputs.Add(new
         {
             type = "function_call_output",
@@ -114,6 +132,8 @@ static async Task<string> RunTransferAsync(
         previous_response_id = initial.RootElement.GetProperty("id").GetString(),
         input = outputs
     });
+    // Expected result:
+    //   The approval decision is submitted as function_call_output.
     return JsonHelpers.GetOutputText(completed.RootElement);
 }
 

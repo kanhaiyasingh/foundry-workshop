@@ -23,6 +23,8 @@ var corpus = new Dictionary<string, (string Title, string Text)>
         "Linformer",
         "Linformer reduces self-attention complexity through low-rank projections.")
 };
+// Expected result:
+//   Corpus: 4 docs
 
 // Step 2: Configure the bounded loop and expose search/fetch schemas to the model.
 return await LabHost.RunAsync(
@@ -63,12 +65,17 @@ return await LabHost.RunAsync(
                 }
             }
         };
+        // Expected result:
+        //   Tools: search, fetch
+        //   Maximum iterations: 6
 
         // Step 3: Ask the fixed comparison question and retain response state across iterations.
         object input =
             "Compare the few-shot learning approaches in this corpus. Search broadly, fetch relevant papers, " +
             "and cite document ids. Say explicitly when the corpus cannot support a claim.";
         string? previousResponseId = null;
+        // Expected result:
+        //   Research question ready.
 
         // Step 4: Execute proposed calls in C# until the model concludes or reaches the safety cap.
         for (var iteration = 1; iteration <= maxIterations; iteration++)
@@ -87,10 +94,14 @@ return await LabHost.RunAsync(
             previousResponseId = response.RootElement.GetProperty("id").GetString();
             var calls = JsonHelpers.GetFunctionCalls(response.RootElement).ToArray();
             Console.WriteLine($"Iteration {iteration}: {calls.Length} tool call(s)");
+            // Expected output:
+            //   Iteration <number>: <model-dependent count> tool call(s)
             if (calls.Length == 0)
             {
                 // The final wording and path vary; success requires supported [doc-id] citations.
                 Console.WriteLine(JsonHelpers.GetOutputText(response.RootElement));
+                // Expected output:
+                //   <model-generated comparison with [doc-id] citations>
                 return;
             }
 
@@ -147,6 +158,8 @@ static object SearchCorpus(
         })
         .ToArray();
 }
+// Expected result:
+//   search returns matching document ids, titles, and summaries, or no hits.
 
 // Step 6: Fetch returns one approved document or an explicit not-found result.
 static object FetchDocument(
@@ -155,6 +168,8 @@ static object FetchDocument(
     corpus.TryGetValue(id, out var document)
         ? new { id, title = document.Title, text = document.Text }
         : new { id, error = "Document not found." };
+// Expected result:
+//   fetch returns one document, or "Document not found."
 
 // Your Turn: add doc-005, ask a cross-topic question, then lower maxIterations and test
 // an out-of-corpus prompt to observe the cost/quality and knowledge-boundary behavior.
