@@ -13,6 +13,8 @@ TestResults/
 
 # Workshop output
 artifacts/
+eval_test_data.jsonl
+eval_results.jsonl
 site/
 .cache/
 
