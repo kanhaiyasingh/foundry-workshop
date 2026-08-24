@@ -43,8 +43,12 @@ The lab throws if no tool is called rather than treating an ungrounded answer as
 
 ## Your Turn
 
-Replace the in-memory policy tool with the M4 knowledge base, route high-value refunds to
-the M13 approval pattern, and add successful M12 attacks to the M9 test set.
+1. **Ground it for real.** Attach the Module 4 Foundry IQ knowledge base and add a question
+   whose answer must come from a document. Confirm that the response cites it.
+2. **Add a guardrail.** Pin the Module 11 guardrail policy to the deployment and try a
+   prompt-injection input. Confirm that it is blocked.
+3. **Harden and measure.** Run the Module 12 scan against the capstone, add the
+   worst-scoring prompts to the Module 9 test set, and re-evaluate.
 
 ## Cleanup and cost
 

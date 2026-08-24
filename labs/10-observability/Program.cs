@@ -118,5 +118,11 @@ return await LabHost.RunAsync(
     "CHAT_MODEL",
     "APP_INSIGHTS_CONN_STRING");
 
-// Your Turn: add a function tool with a child activity, query model/length tags, and
-// create a second evaluation rule; disable workshop rules when the exercise is complete.
+// Your Turn:
+// 1. Add a tool, watch the span tree grow. Attach a function tool as in M3, create a
+//    child Activity around host execution, and confirm a tool span nests under
+//    foundry.responses in Application Insights.
+// 2. Trace token cost. Read usage.output_tokens from response.RootElement, add it as a
+//    span tag, and extend the KQL query to sum output tokens by model over the last hour.
+// 3. Add a second rule. Repeat the eval/rule REST calls for builtin.coherence with new
+//    ids, then GET evaluation_rules and confirm both rules are returned.

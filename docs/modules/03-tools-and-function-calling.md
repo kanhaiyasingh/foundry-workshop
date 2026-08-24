@@ -40,8 +40,15 @@ With the optional flag, a second model-generated statistics answer appears.
 
 ## Your Turn
 
-Add a required date parameter, reject dates in the past, and return a structured tool
-error. Confirm the model explains the failure instead of inventing weather.
+1. **Add a second function tool.** Declare `convert_currency(amount, from, to)`, attach it
+   alongside `get_weather`, and ask a question that forces both calls in one turn. The
+   existing `calls` loop already handles multiple `function_call` items.
+2. **Make Code Interpreter draw.** Run with `--code-interpreter` after changing its prompt
+   to request a bar-chart PNG. Inspect `codeResult.RootElement` for the
+   `container_file_citation`, then retrieve the cited container file through the
+   authenticated Responses/container REST endpoint.
+3. **Starve the model.** Remove `get_weather` from `tools` but keep the weather question.
+   Watch the model refuse or hedge, proving that the tool—not the model—supplied the facts.
 
 ## Cleanup and cost
 

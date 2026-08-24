@@ -155,5 +155,11 @@ internal sealed record EvalRecord(
     string Response,
     string ExpectedTerms);
 
-// Your Turn: improve the checks so the factual error fails, add citation/length rules,
-// then tighten a threshold and use the pass rate as a regression gate.
+// Your Turn:
+// 1. Break a good row. Change the first EvalRecord.Response so it contradicts Context,
+//    rerun, and watch lexical_groundedness drop and the row flip to FAIL.
+// 2. Add fluency and similarity. Implement Fluency and Similarity C# evaluators beside
+//    Coverage and Grounded; add GroundTruth to EvalRecord for similarity and write both
+//    new scores to the JSONL output.
+// 3. Tighten your custom rule. Raise the coverage threshold in rowPassed from 0.5 to
+//    0.8 and rerun; more rows should fail.

@@ -39,8 +39,14 @@ Route: TECHNICAL -> technical-specialist
 
 ## Your Turn
 
-Add a security specialist and a `SECURITY` route. Create a test table of ambiguous
-questions and measure routing accuracy before changing prompts.
+1. **Add a fourth specialist.** Create an `it-specialist` `ChatClientAgent`, add `IT` to
+   the router instructions and label switch, then ask: “My laptop won't connect to VPN,
+   who do I contact?”
+2. **Probe the default branch.** Ask: “Tell me about Contoso” and confirm that it falls
+   through to `generalAgent`. Then tighten the router prompt to handle it better.
+3. **Ground a specialist.** If you have the Module 4 knowledge base, retrieve its context
+   through the existing MCP Responses shape before invoking `policyAgent`, include that
+   context in the specialist request, and confirm that the answer cites document titles.
 
 ## Cleanup and cost
 

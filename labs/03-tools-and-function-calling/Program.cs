@@ -111,5 +111,13 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");
 
-// Your Turn: add a second function that can be called in the same turn, then remove
-// get_weather and confirm the model no longer presents the mock weather as grounded fact.
+// Your Turn:
+// 1. Add a second function tool. Declare convert_currency(amount, from, to), attach it
+//    alongside get_weather, and ask a question that forces both calls in one turn. The
+//    existing calls loop already handles multiple function_call items.
+// 2. Make Code Interpreter draw. Run with --code-interpreter after changing its prompt
+//    to request a bar-chart PNG. Inspect codeResult.RootElement for the
+//    container_file_citation, then retrieve the cited container file through the
+//    authenticated Responses/container REST endpoint.
+// 3. Starve the model. Remove get_weather from tools but keep the weather question.
+//    Watch the model refuse or hedge, proving the tool supplied the facts.

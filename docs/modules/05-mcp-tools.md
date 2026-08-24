@@ -45,8 +45,13 @@ server, the event count can be zero; use a server-specific question.
 
 ## Your Turn
 
-Set `--require-approval`, observe the approval request, and design an application approval
-handler rather than changing the tool to unconditional execution.
+1. **Ask a multi-step question.** Try: “Find overdue tasks on the Aurora project and flag
+   a risk for the latest one.” Inspect `response.RootElement["output"]` and confirm that
+   more than one `mcp_call` item appears.
+2. **Tighten the instructions.** Edit `input` to require the task id for every item and
+   rerun. Notice the format change.
+3. **Flip approval on.** Run with `--require-approval` and inspect `response.output` for
+   an `mcp_approval_request` instead of an immediate tool call.
 
 ## Cleanup and cost
 

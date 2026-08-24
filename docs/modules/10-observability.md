@@ -41,8 +41,14 @@ The optional path prints the created rule response.
 
 ## Your Turn
 
-Add a function tool to the response and create child activities around tool execution.
-Query Application Insights for model, response length, and pass/fail tags.
+1. **Add a tool, watch the span tree grow.** Attach a function tool as in Module 3, create
+   a child `Activity` around host execution, and confirm that a tool span nests under
+   `foundry.responses` in Application Insights.
+2. **Trace token cost.** Read `usage.output_tokens` from `response.RootElement`, add it as
+   a span tag, and extend the KQL query to sum output tokens by model over the last hour.
+3. **Add a second rule.** Repeat the evaluation and rule REST calls for
+   `builtin.coherence` with new ids, then `GET evaluation_rules` and confirm that both
+   rules are returned.
 
 ## Cleanup and cost
 

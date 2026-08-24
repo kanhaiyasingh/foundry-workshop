@@ -168,5 +168,10 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");
 
-// Your Turn: replace policy lookup with M4, apply M11 guardrails, run M12 attacks,
-// and add the worst cases to M9 while retaining the three capstone checks as a gate.
+// Your Turn:
+// 1. Ground it for real. Attach the M4 Foundry IQ knowledge base and add a question whose
+//    answer must come from a document; confirm the response cites it.
+// 2. Add a guardrail. Pin the M11 guardrail policy to the deployment and try a
+//    prompt-injection input; confirm it is blocked.
+// 3. Harden and measure. Run the M12 scan against the capstone, add the worst-scoring
+//    prompts to the M9 test set, and re-evaluate.

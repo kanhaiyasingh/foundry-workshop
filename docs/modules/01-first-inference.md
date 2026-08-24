@@ -41,8 +41,13 @@ configured deployment.
 
 ## Your Turn
 
-Change the embedding input to two strings and inspect both vectors. Then update the
-streaming prompt and render deltas with a different console color.
+1. **Swap the model.** If you deployed a reasoning model, set `REASONING_MODEL` in `.env`,
+   read it with `context.Config.Require("REASONING_MODEL")`, and use it in
+   `GetProjectResponsesClientForModel(...)`. How does the answer style change?
+2. **Compare token usage.** Ask a long question and a short one, then print
+   `response.Usage.TotalTokenCount` for each.
+3. **Embed and compare.** Embed two similar sentences and two different ones, normalize
+   the vectors, and compute cosine similarity in C#. The similar pair should score higher.
 
 ## Cleanup and cost
 

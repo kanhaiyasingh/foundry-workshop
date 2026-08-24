@@ -38,8 +38,13 @@ Cloud scores vary; the wrong dimension should remain the weak row.
 
 ## Your Turn
 
-Add a citation-format evaluator and a maximum-length rule. Treat thresholds as versioned
-release criteria and fail a local script when the pass rate regresses.
+1. **Break a good row.** Change the first `EvalRecord.Response` so that it contradicts
+   `Context`, rerun, and watch `lexical_groundedness` drop and the row flip to `FAIL`.
+2. **Add fluency and similarity.** Implement `Fluency` and `Similarity` C# evaluators
+   beside `Coverage` and `Grounded`. Add `GroundTruth` to `EvalRecord` for similarity and
+   write both new scores to the JSONL output.
+3. **Tighten your custom rule.** Raise the coverage threshold in `rowPassed` from `0.5`
+   to `0.8` and rerun. More rows should fail.
 
 ## Cleanup and cost
 

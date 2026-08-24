@@ -258,5 +258,11 @@ internal sealed record TrainingExample(IReadOnlyList<TrainingMessage> Messages);
 
 internal sealed record TrainingMessage(string Role, string Content);
 
-// Your Turn: generate more balanced teacher-labelled data, compare another supported
-// student with the same held-out evaluator, and never include held-out rows in training.
+// Your Turn:
+// 1. Grow the dataset. Expand BuildExamples with equal counts per severity and write a
+//    larger training.jsonl; compare class counts so one label is not over-predicted.
+// 2. Train longer. Increase hyperparameters.n_epochs, resubmit, and re-evaluate; does
+//    the gain widen, plateau, or overfit?
+// 3. Swap the student. Set FINE_TUNE_MODEL to another supported small base model,
+//    resubmit, and compare held-out accuracy and service-reported model metadata. This
+//    Foundry REST path does not produce a local LoRA adapter size.

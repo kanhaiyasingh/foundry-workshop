@@ -67,5 +67,10 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");
 
-// Your Turn: change the agent's voice, observe version behavior with changed and unchanged
-// definitions, and add another turn to the same conversation.
+// Your Turn:
+// 1. Reshape the voice. Rewrite definition.Instructions (for example, as a cheerful
+//    children's-book narrator), rerun, and confirm the version and tone change.
+// 2. Prove idempotency. Publish the unchanged definition twice and watch version.Version
+//    hold steady; then change one word and watch it increase.
+// 3. Give it context. Add a prior turn to the same project conversation, then send the
+//    next request through responses and see how it blends that context with stored instructions.

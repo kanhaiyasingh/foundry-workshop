@@ -141,5 +141,11 @@ return await LabHost.RunAsync(
     "CHAT_MODEL",
     "SEARCH_ENDPOINT");
 
-// Your Turn: add a document and URL field, require citations for supported claims, and
-// confirm an out-of-corpus question produces an explicit "I don't know."
+// Your Turn:
+// 1. Add a document. Append a fourth fact to documents, upload it, then ask a question
+//    only that document can answer. Confirm its title appears in the grounded citation.
+// 2. Raise the reasoning effort. Ask a compound question and compare the citations. The
+//    installed Search 12.0 C# SDK exposes only minimal reasoning; when low reasoning is
+//    available in the C# SDK/service version, switch to it and compare again.
+// 3. Tighten grounding. Change the grounded request to require two citations per claim
+//    and rerun. Watch the answer style change.

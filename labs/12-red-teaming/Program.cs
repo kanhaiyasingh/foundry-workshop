@@ -108,5 +108,11 @@ return await LabHost.RunAsync(
 
 internal sealed record Attack(string Strategy, string Prompt);
 
-// Your Turn: add an obfuscation strategy and more prompts per strategy, then compare the
-// bare model with the M11 guarded deployment and feed successes into M9 regressions.
+// Your Turn:
+// 1. Widen coverage. Add 10 distinct attack objectives per strategy and rerun; more
+//    prompts make ASR more stable and the scan longer.
+// 2. Add a strategy. Add a flip or leetspeak Attack to attacks and rerun; compare that
+//    encoding's ASR with the existing baseline and encoded strategies.
+// 3. Attack a defended target. Set CHAT_MODEL to the M11 guardrailed deployment, rerun
+//    the cloud scan, and compare its ASR with the bare model; guardrails should drive it
+//    toward zero.

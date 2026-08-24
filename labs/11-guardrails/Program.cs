@@ -185,5 +185,12 @@ static async Task PutArmAsync(WorkshopContext context, string uri, object body)
     using var _ = await context.Rest.SendArmJsonAsync(HttpMethod.Put, new Uri(uri), body);
 }
 
-// Your Turn: add a forbidden term, tune one supported threshold, then test one benign
-// and one blocked prompt against the provisioned deployment and inspect the filter result.
+// Your Turn:
+// 1. Add a forbidden term. Add ["comp-initech"] = "Initech Banking" to blockedTerms,
+//    add an Initech probe, rerun the blocklist/policy apply path, then ask the guarded
+//    deployment about Initech and watch the business blocklist catch it.
+// 2. Tune a threshold. Change the Violence severityThreshold to "Low", reapply the
+//    policy, and probe with an edgy-but-not-violent prompt to see the stricter line.
+// 3. Name the trip in detail. Extend the guarded-deployment test to print the raw
+//    content_filter_result JSON so you can inspect severities and the exact jailbreak
+//    and custom_blocklists flags.

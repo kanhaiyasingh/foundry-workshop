@@ -55,5 +55,11 @@ return await LabHost.RunAsync(
     "CHAT_MODEL",
     "MCP_SERVER_URL");
 
-// Your Turn: ask a question requiring two server tools, require ids in the answer, then
-// run with --require-approval and design the approval/resume path for write operations.
+// Your Turn:
+// 1. Ask a multi-step question. Use "Find overdue tasks on the Aurora project and flag
+//    a risk for the latest one." Inspect response.RootElement["output"] and confirm more
+//    than one mcp_call item appears.
+// 2. Tighten the instructions. Edit input to require the task id for every item and
+//    rerun. Notice the format change.
+// 3. Flip approval on. Run with --require-approval and inspect response.output for an
+//    mcp_approval_request instead of an immediate tool call.

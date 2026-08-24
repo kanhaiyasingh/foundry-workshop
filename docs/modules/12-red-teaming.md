@@ -40,8 +40,13 @@ Any nonzero cloud ASR is a finding to investigate, not a lab failure to hide.
 
 ## Your Turn
 
-Add a typoglycemia or Unicode-obfuscation strategy and rerun. Feed successful attacks
-into the M9 regression dataset before changing guardrails.
+1. **Widen coverage.** Add 10 distinct attack objectives per strategy and rerun. More
+   prompts make ASR more stable—and the scan longer.
+2. **Add a strategy.** Add a flip or leetspeak `Attack` to `attacks` and rerun. Compare
+   that encoding's ASR with the existing baseline and encoded strategies.
+3. **Attack a defended target.** Set `CHAT_MODEL` to the Module 11 guardrailed deployment,
+   rerun the cloud scan, and compare its ASR with the bare model. Guardrails should drive
+   it toward zero.
 
 ## Cleanup and cost
 

@@ -70,5 +70,11 @@ return await LabHost.RunAsync(
     "CHAT_MODEL",
     "EMBEDDING_MODEL");
 
-// Your Turn: compare embeddings for related and unrelated sentences, then change the
-// streaming prompt while preserving incremental rendering.
+// Your Turn:
+// 1. Swap the model. If you deployed a reasoning model, set REASONING_MODEL in .env,
+//    read it with context.Config.Require("REASONING_MODEL"), and use it for a Responses
+//    call. Note how the answer style changes.
+// 2. Compare token usage. Ask a long question and a short one, then print
+//    response.Usage.TotalTokenCount for each.
+// 3. Embed and compare. Embed two similar sentences and two different ones, normalize
+//    the vectors, and compute cosine similarity in C#; similar sentences should score higher.

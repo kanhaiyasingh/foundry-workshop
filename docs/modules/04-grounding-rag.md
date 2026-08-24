@@ -42,8 +42,13 @@ Without a connection, the program prints the exact setting needed for the agent 
 
 ## Your Turn
 
-Add a `url` field, upload another fact, and require a URL citation in the grounded answer.
-Test a question absent from the corpus and require an explicit "I don't know."
+1. **Add a document.** Append a fourth fact to `documents`, upload it, then ask a question
+   only that document can answer. Confirm that its title appears in the grounded citation.
+2. **Raise the reasoning effort.** Ask a compound question and compare the citations. The
+   installed Search 12.0 C# SDK exposes only minimal reasoning; when low reasoning is
+   available in the C# SDK/service version, switch to it and compare again.
+3. **Tighten grounding.** Change the grounded request to require two citations per claim
+   and rerun. Watch the answer style change.
 
 ## Cleanup and cost
 

@@ -95,5 +95,12 @@ return await LabHost.RunAsync(
     "PROJECT_ENDPOINT",
     "CHAT_MODEL");
 
-// Your Turn: add a SECURITY specialist and route, probe an ambiguous fallback question,
-// then ground one specialist with the M4 knowledge base without changing dispatch.
+// Your Turn:
+// 1. Add a fourth specialist. Create an it-specialist ChatClientAgent, add IT to the
+//    router instructions and label switch, then ask "My laptop won't connect to VPN,
+//    who do I contact?"
+// 2. Probe the default branch. Ask "Tell me about Contoso" and confirm it falls through
+//    to generalAgent. Then tighten the router prompt to handle it better.
+// 3. Ground a specialist. If you have the M4 knowledge base, retrieve its context through
+//    the existing MCP Responses shape before invoking policyAgent, include that context
+//    in the specialist request, and confirm the answer cites document titles.

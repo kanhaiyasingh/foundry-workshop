@@ -120,5 +120,11 @@ return await LabHost.RunAsync(
     "CHAT_MODEL",
     "EMBEDDING_MODEL");
 
-// Your Turn: add a preference and recall it under this scope, then search under a
-// different scope and confirm the original user's memory is absent.
+// Your Turn:
+// 1. Teach it something new. Add "I've switched to nullable reference types everywhere"
+//    to conversation, submit another update, wait for extraction, then search in a new
+//    call and confirm the memory is returned.
+// 2. Prove isolation. Change scope to "workshop-user-sam" and run the same search; it
+//    should not return Dana's preferences.
+// 3. Go production-style. Resolve scope from context.Config.Require("USER_ID") instead
+//    of a fixed string, so one application instance serves users with isolated memory.

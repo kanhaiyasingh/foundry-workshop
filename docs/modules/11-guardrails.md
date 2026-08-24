@@ -42,8 +42,14 @@ ARM modes print the policy and deployment names after accepted requests.
 
 ## Your Turn
 
-Add a domain term and a test case. Apply the updated item, send a real benign and blocked
-prompt to the guarded deployment, and retain the full content-filter result for review.
+1. **Add a forbidden term.** Add `["comp-initech"] = "Initech Banking"` to `blockedTerms`,
+   add an Initech probe, rerun the blocklist/policy apply path, then ask the guarded
+   deployment about Initech and watch the business blocklist catch it.
+2. **Tune a threshold.** Change the Violence `severityThreshold` to `"Low"`, reapply the
+   policy, and probe with an edgy-but-not-violent prompt to see the stricter line.
+3. **Name the trip in detail.** Extend the guarded-deployment test to print the raw
+   `content_filter_result` JSON so that you can inspect severities and the exact
+   `jailbreak` and `custom_blocklists` flags.
 
 ## Cleanup and cost
 

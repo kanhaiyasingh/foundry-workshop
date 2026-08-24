@@ -50,9 +50,13 @@ Submission prints uploaded file ids and a job id/status.
 
 ## Your Turn
 
-Generate a larger balanced dataset with a teacher model, retain a held-out test split,
-and replace the illustrative scores with measurements from the same evaluator. Never
-train on the held-out rows.
+1. **Grow the dataset.** Expand `BuildExamples()` with equal counts per severity and write
+   a larger `training.jsonl`. Compare class counts so that one label is not over-predicted.
+2. **Train longer.** Increase `hyperparameters.n_epochs`, resubmit, and re-evaluate. Does
+   the gain widen, plateau, or overfit?
+3. **Swap the student.** Set `FINE_TUNE_MODEL` to another supported small base model,
+   resubmit, and compare held-out accuracy and service-reported model metadata. This
+   Foundry REST path does not produce a local LoRA adapter size.
 
 ## Cleanup and cost
 

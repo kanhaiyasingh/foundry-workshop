@@ -45,8 +45,15 @@ No real funds move; the tool implementation is a deterministic workshop mock.
 
 ## Your Turn
 
-Replace the Boolean approval with a console prompt and an amount policy. Record approver,
-decision, request hash, and tool arguments in an audit event without recording credentials.
+1. **Add a second gated tool.** Add `close_account` to the tools in `RunTransferAsync`,
+   handle its `function_call` in the same loop, ask “close ACC-003,” and reject it.
+2. **Pin a version over REST.** Create and re-version a named agent with the Module 2
+   `AgentAdministrationClient` pattern, then send
+   `agent_reference { name, version = "1" }` in the raw Responses payload and prove that
+   the older behavior still answers.
+3. **Count streaming events.** Use a longer prompt and extend the SSE parsing to count
+   `response.output_text.delta` and `response.completed` events. Expect more deltas but
+   still one completed event.
 
 ## Cleanup and cost
 

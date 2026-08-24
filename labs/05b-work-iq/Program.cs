@@ -68,5 +68,12 @@ return await LabHost.RunAsync(
     "CHAT_MODEL",
     "WORKIQ_MCP_URL");
 
-// Your Turn: ask a cross-signal question and request action items with owners, deadlines,
-// and source links; verify every cited item is already accessible to the signed-in user.
+// Your Turn:
+// 1. Cross-signal question. Ask "Summarize the SharePoint doc Dana shared in Teams
+//    yesterday." Inspect response.RootElement["output"] and confirm more than one
+//    mcp_call when the answer combines files and Teams.
+// 2. Tighten governance. Keep require_approval = "never" for the read-only request; if
+//    the server exposes write tools separately, send those through an MCP tool/request
+//    with require_approval = "always" and confirm approvals appear only for actions.
+// 3. Capstone tie-in. Sketch a work-grounded specialist for M15: decide which questions
+//    the router should send to Work IQ versus the M4 Foundry IQ knowledge base.

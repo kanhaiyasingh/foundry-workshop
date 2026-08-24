@@ -40,8 +40,13 @@ Re-running creates another agent version by design.
 
 ## Your Turn
 
-Add a description and change the instructions to request structured bullet points.
-Create another version, then compare responses while pinning the earlier version.
+1. **Reshape the voice.** Rewrite `definition.Instructions`—for example, make the agent a
+   cheerful children's-book narrator—rerun, and confirm that its version and tone change.
+2. **Prove idempotency.** Publish the unchanged definition twice and watch
+   `version.Version` hold steady. Then change one word and watch it increase.
+3. **Give it context.** Add a prior turn to the same project conversation, then send the
+   next request through `responses`. See how the agent blends the conversation context
+   with its stored instructions.
 
 ## Cleanup and cost
 

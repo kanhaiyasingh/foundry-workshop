@@ -44,8 +44,15 @@ The returned content is permission-trimmed ...
 
 ## Your Turn
 
-Ask for action items with owners and deadlines. Verify each citation opens only content
-the signed-in user can already access.
+1. **Cross-signal question.** Ask: “Summarize the SharePoint doc Dana shared in Teams
+   yesterday.” Inspect `response.RootElement["output"]` and confirm that more than one
+   `mcp_call` appears when the answer combines files and Teams.
+2. **Tighten governance.** Keep `require_approval = "never"` for the read-only request. If
+   the server exposes write tools separately, send those through an MCP tool/request with
+   `require_approval = "always"` and confirm that approvals appear only for actions.
+3. **Capstone tie-in.** Sketch a work-grounded specialist for Module 15. Decide which
+   questions the router should send to Work IQ and which should go to the Module 4
+   Foundry IQ knowledge base.
 
 ## Cleanup and cost
 
