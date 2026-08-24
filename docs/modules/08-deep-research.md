@@ -5,6 +5,33 @@
 Let a reasoning model plan a bounded search/fetch loop over an approved corpus and produce
 a cited synthesis without crossing the knowledge boundary.
 
+> **Goal:** Run an agentic research loop in which a reasoning model plans, searches an
+> approved knowledge source, iterates, and returns a cited synthesis.
+>
+> **You'll use:** The `RESEARCH_MODEL` deployment through the Responses API with
+> `search` and `fetch` function tools.
+
+## How the research loop works
+
+A normal chat answer is one shot. Deep research is different: the model decides what to
+search, reads the documents it fetches, searches again to fill gaps, and concludes only
+when it has enough evidence. The C# host executes every tool call against the bounded
+corpus and returns the result to the same response chain.
+
+```text
+question -> RESEARCH_MODEL ----> search(query) ----+
+                  |                                |
+                  +---- tool results <-------------+  repeat while tools are requested
+                  |
+                  +-------------------------------> cited report with [doc-id] sources
+```
+
+!!! note "One project, one bounded research loop"
+    The C# lab uses one project endpoint and the configured `RESEARCH_MODEL` for both
+    investigation and the final cited response. The loop stops when the model requests
+    no more tools, or fails safely after six iterations. Deep-research model and tool
+    support varies by deployment and region.
+
 ## Prerequisites
 
 - `PROJECT_ENDPOINT`
