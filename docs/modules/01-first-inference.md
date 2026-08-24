@@ -2,8 +2,8 @@
 
 ## Objective
 
-Call a Foundry model through the stable `Azure.AI.Projects` 2.x client, create an
-embedding through the account data plane, and consume Responses API SSE deltas.
+Call Foundry through classic chat completions, batch embeddings, streaming chat, and the
+Responses API while preserving the notebook's complete first-inference flow.
 
 ## Prerequisites
 
@@ -22,22 +22,29 @@ Source: [`labs/01-first-inference/Program.cs`](https://github.com/malaika2820/fo
 
 ## Code flow
 
-1. `AIProjectClient` creates a native `ProjectResponsesClient`.
-2. The first call verifies model inference.
-3. An authenticated REST call uses the account endpoint for embeddings.
-4. `FoundryRestClient.StreamResponseTextAsync` parses `response.output_text.delta`
-   events without buffering the full response.
+1. Load and print the project, chat deployment, and embedding deployment.
+2. Build `AIProjectClient` and the account-scoped OpenAI data-plane route.
+3. Run classic chat completions and print model, token usage, and answer text.
+4. Embed three strings in one batch and preview every vector.
+5. Stream a chat-completions response incrementally.
+6. Make the minimal Responses API call used by later agent labs.
 
 ## Expected output
 
 ```text
-Response: Foundry is ready.
-Embedding dimensions: 3072
-Streaming: The Responses API ...
+Model  : <chat deployment>
+Tokens : <model-dependent count>
+<catastrophic-forgetting explanation>
+Model      : <embedding deployment>
+Dimensions : <deployment-dependent dimensions>
+[0] [<first three values>, ...]  (<dimensions> dims)
+[1] [<first three values>, ...]  (<dimensions> dims)
+[2] [<first three values>, ...]  (<dimensions> dims)
+<streamed Microsoft Foundry sentence>
+Saturn is a planet famous for its prominent ring system.
 ```
 
-The wording of the streamed sentence can vary. The embedding dimension reflects the
-configured deployment.
+Model wording, token usage, vectors, and embedding dimensions vary by deployment.
 
 ## Your Turn
 
@@ -45,7 +52,7 @@ configured deployment.
    read it with `context.Config.Require("REASONING_MODEL")`, and use it in
    `GetProjectResponsesClientForModel(...)`. How does the answer style change?
 2. **Compare token usage.** Ask a long question and a short one, then print
-   `response.Usage.TotalTokenCount` for each.
+   `usage.total_tokens` from each chat-completions response.
 3. **Embed and compare.** Embed two similar sentences and two different ones, normalize
    the vectors, and compute cosine similarity in C#. The similar pair should score higher.
 
@@ -55,6 +62,5 @@ This lab creates no persistent resources. It consumes model and embedding tokens
 
 ## Parity and preview caveats
 
-Responses use the native stable SDK. The embedding call intentionally uses REST because
-the workshop demonstrates the endpoint split explicitly: project for Responses, account
-for classic embedding deployment routes.
+Responses uses the native stable SDK. Classic chat and embeddings use authenticated REST
+because this project routes those operations through the account data plane.
