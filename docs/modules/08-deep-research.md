@@ -68,9 +68,14 @@ The sequence is model-dependent; the bounded stop condition is deterministic.
 
 ## Your Turn
 
-Ask an out-of-scope fusion-energy question and confirm the model declines. Then replace
-the dictionary search body with the M4 knowledge-base retrieval call without changing the
-orchestration loop.
+1. **Add a document.** Add `doc-005` about cross-lingual transfer to `corpus`, then ask a
+   multilingual-NLP question. Confirm the loop searches, fetches, and cites `[doc-005]`.
+2. **Watch it iterate.** Ask, "Contrast few-shot metric methods with efficient attention."
+   Inspect each printed `Iteration <n>: <count> tool call(s)` line; you should see multiple
+   search/fetch rounds.
+3. **Tune the cap.** Lower `maxIterations` to `1` and observe the loop stop early instead
+   of producing a complete report. Raise it again and watch the model dig deeper. This is
+   the cost/quality dial.
 
 ## Cleanup and cost
 

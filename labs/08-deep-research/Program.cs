@@ -172,5 +172,12 @@ static object FetchDocument(
 // Expected result:
 //   fetch returns one document, or "Document not found."
 
-// Your Turn: add doc-005, ask a cross-topic question, then lower maxIterations and test
-// an out-of-corpus prompt to observe the cost/quality and knowledge-boundary behavior.
+// Your Turn:
+// 1. Add a document. Add doc-005 about cross-lingual transfer to corpus, then ask a
+//    multilingual-NLP question. Confirm the loop searches, fetches, and cites [doc-005].
+// 2. Watch it iterate. Ask, "Contrast few-shot metric methods with efficient attention."
+//    Inspect each printed "Iteration <n>: <count> tool call(s)" line; you should see
+//    multiple search/fetch rounds.
+// 3. Tune the cap. Lower maxIterations to 1 and observe the loop stop early instead of
+//    producing a complete report. Raise it again and watch the model dig deeper. This is
+//    the cost/quality dial.
