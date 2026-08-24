@@ -1,4 +1,5 @@
 // M10 objective: export a Foundry response span and optionally enable continuous evaluation.
+// Full guide: docs/modules/10-observability.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, APP_INSIGHTS_CONN_STRING, and ingestion access.
 // Check: dotnet run --project .\labs\10-observability -- --check
 // Run:   dotnet run --project .\labs\10-observability

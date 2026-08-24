@@ -1,4 +1,5 @@
 // M8 objective: let a reasoning model search and fetch a bounded corpus, then cite a report.
+// Full guide: docs/modules/08-deep-research.md
 // Prerequisites: PROJECT_ENDPOINT and a tool-capable RESEARCH_MODEL deployment.
 // Check: dotnet run --project .\labs\08-deep-research -- --check
 // Run:   dotnet run --project .\labs\08-deep-research

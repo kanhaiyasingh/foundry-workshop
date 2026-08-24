@@ -1,4 +1,5 @@
 // M4 objective: index a small corpus, build a Foundry IQ knowledge base, and ground a response.
+// Full guide: docs/modules/04-grounding-rag.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, SEARCH_ENDPOINT, Search contributor roles,
 // and optional SEARCH_CONNECTION for the final MCP-backed answer.
 // Check: dotnet run --project .\labs\04-grounding-rag -- --check

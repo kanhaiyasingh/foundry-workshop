@@ -1,4 +1,5 @@
 // M9 objective: score a small dataset with deterministic C# checks and an optional LLM judge.
+// Full guide: docs/modules/09-evaluation.md
 // Prerequisites: offline mode needs only .NET; --cloud needs PROJECT_ENDPOINT and CHAT_MODEL.
 // Run: dotnet run --project .\labs\09-evaluation
 // Cloud: dotnet run --project .\labs\09-evaluation -- --cloud

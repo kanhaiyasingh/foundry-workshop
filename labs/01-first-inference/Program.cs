@@ -1,4 +1,5 @@
 // M1 objective: make a model response, create an embedding, and stream response deltas.
+// Full guide: docs/modules/01-first-inference.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, EMBEDDING_MODEL, az login, and Foundry access.
 // Check: dotnet run --project .\labs\01-first-inference -- --check
 // Run:   dotnet run --project .\labs\01-first-inference

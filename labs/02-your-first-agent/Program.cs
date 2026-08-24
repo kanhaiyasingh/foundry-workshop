@@ -1,4 +1,5 @@
 // M2 objective: create a versioned prompt agent and continue a project conversation.
+// Full guide: docs/modules/02-your-first-agent.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, az login, and permission to create agents.
 // Check: dotnet run --project .\labs\02-your-first-agent -- --check
 // Run:   dotnet run --project .\labs\02-your-first-agent

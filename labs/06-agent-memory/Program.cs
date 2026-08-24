@@ -1,4 +1,5 @@
 // M6 objective: create a preview memory store, extract preferences, and recall them by scope.
+// Full guide: docs/modules/06-agent-memory.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, EMBEDDING_MODEL, Memory API availability,
 // and permission to manage project memory stores.
 // Check: dotnet run --project .\labs\06-agent-memory -- --check

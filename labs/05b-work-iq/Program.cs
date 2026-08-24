@@ -1,4 +1,5 @@
 // M5b objective: ground a workplace question in permission-aware Work IQ data over MCP.
+// Full guide: docs/modules/05b-work-iq.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, WORKIQ_MCP_URL, Microsoft 365 licensing,
 // tenant consent, a supported delegated/OBO connection, and optional WORKIQ_MCP_LABEL.
 // Check: dotnet run --project .\labs\05b-work-iq -- --check

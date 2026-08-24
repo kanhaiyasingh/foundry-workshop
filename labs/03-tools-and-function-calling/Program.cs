@@ -1,4 +1,5 @@
 // M3 objective: execute a host-side function-call loop and optionally use Code Interpreter.
+// Full guide: docs/modules/03-tools-and-function-calling.md
 // Prerequisites: PROJECT_ENDPOINT, a tool-capable CHAT_MODEL, and optional Code Interpreter access.
 // Check: dotnet run --project .\labs\03-tools-and-function-calling -- --check
 // Run:   dotnet run --project .\labs\03-tools-and-function-calling

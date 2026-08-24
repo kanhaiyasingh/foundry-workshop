@@ -1,4 +1,5 @@
 // M5 objective: attach a remote MCP server and verify tool discovery/invocation.
+// Full guide: docs/modules/05-mcp-tools.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, a Foundry-reachable MCP_SERVER_URL,
 // and optional MCP_SERVER_LABEL.
 // Check: dotnet run --project .\labs\05-mcp-tools -- --check

@@ -1,4 +1,5 @@
 // M7 objective: route fixed questions to focused Agent Framework specialists.
+// Full guide: docs/modules/07-multi-agent-orchestration.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, and a model that follows label-only routing.
 // Check: dotnet run --project .\labs\07-multi-agent-orchestration -- --check
 // Run:   dotnet run --project .\labs\07-multi-agent-orchestration

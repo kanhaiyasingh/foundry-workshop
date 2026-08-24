@@ -1,4 +1,5 @@
 // M12 objective: run a bounded adversarial scan and calculate Attack Success Rate (ASR).
+// Full guide: docs/modules/12-red-teaming.md
 // Prerequisites: offline mode needs only .NET; cloud mode needs PROJECT_ENDPOINT and CHAT_MODEL.
 // Offline: dotnet run --project .\labs\12-red-teaming -- --offline
 // Cloud:   dotnet run --project .\labs\12-red-teaming

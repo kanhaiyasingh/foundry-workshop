@@ -1,4 +1,5 @@
 // M11 objective: layer local checks, a managed blocklist, Prompt Shields, and an RAI policy.
+// Full guide: docs/modules/11-guardrails.md
 // Prerequisites: local mode needs only .NET; --apply needs ARM account settings and rights;
 // --apply --deploy also needs CHAT_MODEL, GUARDRAIL_MODEL_VERSION, quota, and region support.
 // Run: dotnet run --project .\labs\11-guardrails

@@ -1,4 +1,5 @@
 // M13 objective: gate a sensitive tool call, then demonstrate raw REST, continuation, and SSE.
+// Full guide: docs/modules/13-human-in-loop-rest.md
 // Prerequisites: PROJECT_ENDPOINT, a tool-capable CHAT_MODEL, az login, and Foundry access.
 // Check: dotnet run --project .\labs\13-human-in-loop-rest -- --check
 // Run:   dotnet run --project .\labs\13-human-in-loop-rest

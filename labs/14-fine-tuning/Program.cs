@@ -1,4 +1,5 @@
 // M14 objective: prepare validated SFT data, compare illustrative baselines, and optionally submit.
+// Full guide: docs/modules/14-fine-tuning.md
 // Prerequisites: offline mode needs only .NET; submission needs PROJECT_ENDPOINT,
 // FINE_TUNE_MODEL, quota, supported regional capacity, and file/job permissions.
 // Run: dotnet run --project .\labs\14-fine-tuning

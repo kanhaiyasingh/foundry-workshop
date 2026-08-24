@@ -1,4 +1,5 @@
 // M15 objective: combine grounded tools, deterministic evaluation, and optional tracing.
+// Full guide: docs/modules/15-capstone.md
 // Prerequisites: PROJECT_ENDPOINT, CHAT_MODEL, M3/M4/M9/M10 concepts, and optional
 // APP_INSIGHTS_CONN_STRING.
 // Check: dotnet run --project .\labs\15-capstone -- --check
