@@ -2,12 +2,15 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using FoundryWorkshop.Shared;
 
-// Cell 0 [markdown]
 // # M9 · Evaluation
 //
 // Goal: measure answer quality systematically — build a test set, score it with
 // quality, agent, and custom evaluators, then run a batch evaluate() that logs to
 // the Foundry portal.
+//
+// Full guide: docs/modules/09-evaluation.md
+// Check: dotnet run --project .\labs\09-evaluation -- --check
+// Run:   dotnet run --project .\labs\09-evaluation
 //
 // You'll use: the C# equivalents of azure-ai-evaluation's RelevanceEvaluator,
 // GroundednessEvaluator, IntentResolutionEvaluator, ToolCallAccuracyEvaluator,
@@ -38,19 +41,16 @@ return await LabHost.RunAsync(
     args,
     async context =>
     {
-        // Cell 1 [code]
         // Print the current date and time.
         var currentDateTime = DateTime.Now;
         Console.WriteLine($"Current date and time: {currentDateTime:yyyy-MM-dd HH:mm:ss.ffffff}");
 
-        // Cell 2 [markdown]
         // ## 1. Configure
         //
         // Use the same .env as every lab. Evaluators that act as LLM judges need the
         // OpenAI-style account endpoint (not the /api/projects/... path), so derive it
         // from PROJECT_ENDPOINT — there is no extra variable to set.
 
-        // Cell 3 [code]
         var projectEndpoint = context.Config.ProjectEndpoint;
         var chatModel = context.Config.ChatModel; // Exact notebook default: gpt-4.1-mini.
         var aoaiEndpoint = context.Config.AccountUri;
@@ -59,7 +59,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"AOAI    : {aoaiEndpoint}");
         Console.WriteLine($"Judge   : {chatModel}");
 
-        // Cell 4 [markdown]
         // Expected output:
         // Project : https://<account>.services.ai.azure.com/api/projects/<project>
         // AOAI    : https://<account>.services.ai.azure.com/
@@ -68,7 +67,6 @@ return await LabHost.RunAsync(
         // The judge and the model under test happen to be the same deployment here; in
         // production you often grade a cheap model with a stronger judge.
 
-        // Cell 5 [markdown]
         // ## 2. The grader's model config
         //
         // azure-ai-evaluation needs an AzureOpenAIModelConfiguration describing the
@@ -76,7 +74,6 @@ return await LabHost.RunAsync(
         // credential is passed to each evaluator (not baked into the config), which also
         // sidesteps a known Python 3.13 validation quirk in the 1.16.x SDK.
 
-        // Cell 6 [code]
         // C# adaptation: WorkshopContext creates the same keyless TokenCredential and
         // holds the deployment configuration. The stable C# package does not mirror
         // AzureOpenAIModelConfiguration, so cloud judges use the project's Responses
@@ -86,7 +83,6 @@ return await LabHost.RunAsync(
         Console.WriteLine("credential   : ready");
         Console.WriteLine($"model_config : ready -> {chatModel}");
 
-        // Cell 7 [markdown]
         // Expected output:
         // credential   : ready
         // model_config : ready -> gpt-4.1-mini
@@ -97,7 +93,6 @@ return await LabHost.RunAsync(
         // field name differs, check the installed version. This C# lab keeps the same
         // metric names, score range, threshold, prompts, and output contract explicitly.
 
-        // Cell 8 [markdown]
         // ## 3. A small test dataset
         //
         // Evaluation starts with data: rows of query → response, plus the context the
@@ -106,7 +101,6 @@ return await LabHost.RunAsync(
         // the lab is self-contained — and make row 3 deliberately wrong so the scores
         // have something to catch.
 
-        // Cell 9 [code]
         var records = new[]
         {
             new EvalRecord(
@@ -148,7 +142,6 @@ return await LabHost.RunAsync(
         Console.WriteLine(
             "Row 3 is intentionally wrong (1536 vs 3072) — watch groundedness flag it.");
 
-        // Cell 10 [markdown]
         // Expected output:
         // Wrote 4 rows -> eval_test_data.jsonl
         // Row 3 is intentionally wrong (1536 vs 3072) — watch groundedness flag it.
@@ -156,7 +149,6 @@ return await LabHost.RunAsync(
         // A .jsonl file (one JSON object per line) is the format evaluate() consumes in
         // section 7. Real datasets have dozens to hundreds of rows; the shape is identical.
 
-        // Cell 11 [markdown]
         // ## 4. Quality evaluators
         //
         // The bread-and-butter scores. Each is an LLM-as-judge returning a 1–5 score
@@ -166,7 +158,6 @@ return await LabHost.RunAsync(
         // - Groundedness — is it supported by context? (query, response, context)
         // - Coherence — is it logically structured? (query, response)
 
-        // Cell 12 [code]
         var good = records[0];
         var bad = records[2];
 
@@ -190,7 +181,6 @@ return await LabHost.RunAsync(
         Console.WriteLine("BAD row (wrong dimension)");
         Console.WriteLine($"  groundedness : {FormatMetric(badGroundedness)}");
 
-        // Cell 13 [markdown]
         // Expected output:
         // GOOD row
         //   relevance    : {'relevance': 5.0, 'relevance_result': 'pass',
@@ -206,7 +196,6 @@ return await LabHost.RunAsync(
         // scores high, while the contradicted one (1536 vs context's 3072) gets flagged
         // fail. That's the signal you couldn't see by eyeballing.
 
-        // Cell 14 [markdown]
         // ## 5. Agent-specific evaluators
         //
         // Quality scores judge the answer. Agent evaluators judge the behaviour — did it
@@ -219,7 +208,6 @@ return await LabHost.RunAsync(
         // Feed a captured turn directly. For live agent threads, the Python SDK ships
         // AIAgentConverter to turn thread_id/run_id into this shape.
 
-        // Cell 15 [code]
         const string capturedQuery =
             "How many dimensions does text-embedding-3-large output?";
         const string capturedResponse =
@@ -269,7 +257,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"task adherence    : {FormatMetric(adherence)}");
         Console.WriteLine($"tool-call accuracy: {FormatMetric(toolAccuracy)}");
 
-        // Cell 16 [markdown]
         // Expected output:
         // intent resolution : {'intent_resolution': 5.0,
         //                      'intent_resolution_result': 'pass', ...}
@@ -286,7 +273,6 @@ return await LabHost.RunAsync(
         // differs. In C#, capture the same query, response, tool-call, and tool-definition
         // fields from the Responses/Agents REST payload before calling these evaluators.
 
-        // Cell 17 [markdown]
         // ## 6. A custom evaluator
         //
         // Built-ins won't cover every rule your domain cares about. A custom evaluator is
@@ -294,7 +280,6 @@ return await LabHost.RunAsync(
         // a contract: the answer must cover the key terms from its ground_truth. This is
         // simple, deterministic, and cheap.
 
-        // Cell 18 [code]
         var coverageEvaluator = new KeyTermCoverageEvaluator();
         var goodCoverage = coverageEvaluator.Evaluate(
             records[0].Response,
@@ -305,7 +290,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"good row: {FormatCoverage(goodCoverage)}");
         Console.WriteLine($"bad  row: {FormatCoverage(badCoverage)}");
 
-        // Cell 19 [markdown]
         // Expected output:
         // good row: {'key_term_coverage': 0.8, 'key_term_pass': True}
         // bad  row: {'key_term_coverage': 0.43, 'key_term_pass': False}
@@ -314,7 +298,6 @@ return await LabHost.RunAsync(
         // valid evaluator — evaluate() treats the class exactly like built-ins. Use this
         // for business rules: citation format, banned phrases, length bounds, schema checks.
 
-        // Cell 20 [markdown]
         // ## 7. Batch evaluate → metrics + portal
         //
         // Spot-checks are for debugging; evaluate() is the real run. It applies all
@@ -323,7 +306,6 @@ return await LabHost.RunAsync(
         // returns a studio_url. column_mapping tells each evaluator which dataset
         // columns to read.
 
-        // Cell 21 [code]
         // C# adaptation: there is no direct stable C# evaluate(...) facade matching the
         // Python 1.16.x API. The loop below preserves its column mappings and local JSONL
         // result artifact. Each built-in score is a strict-schema LLM judge call and the
@@ -378,7 +360,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"Portal: {portalUrl}");
         Console.WriteLine($"Results: {resultsPath}");
 
-        // Cell 22 [markdown]
         // Expected output:
         // Aggregate metrics:
         //   relevance.relevance                4.75
@@ -395,13 +376,11 @@ return await LabHost.RunAsync(
         // scores, judge reasoning, and a trend line across runs. This C# version writes
         // all row-level scores and reasons to eval_results.jsonl.
 
-        // Cell 23 [markdown]
         // Tip — This is the foundation for the next lab:
         // Offline evaluation runs before you ship. In M10 you'll wire the same evaluators
         // to run continuously on live production traffic — the other half of the quality
         // loop in the diagram above.
 
-        // Cell 24 [markdown]
         // ## 🧪 Your turn
         //
         // 1. Break a good row. Edit row 1's response in records to contradict its context,
