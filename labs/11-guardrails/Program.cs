@@ -38,7 +38,6 @@ using System.Text.RegularExpressions;
 using Azure.AI.Projects.Agents;
 using FoundryWorkshop.Shared;
 
-// Notebook cell: print the current date and time.
 Console.WriteLine($"Current date and time: {DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}");
 
 return await LabHost.RunAsync(

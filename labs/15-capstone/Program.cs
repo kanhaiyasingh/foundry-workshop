@@ -9,7 +9,6 @@ using OpenTelemetry.Trace;
 
 #pragma warning disable OPENAI001
 
-// Cell 0 [markdown]
 // # M15 - Capstone
 //
 // Goal: combine everything - a grounded, tool-using, evaluated, observable agent -
@@ -44,13 +43,11 @@ return await LabHost.RunAsync(
                     .Build()
                 : null;
 
-        // Cell 1 [markdown]
         // ## 1. Bootstrap (the pattern you now know by heart)
         //
         // Same four lines from M1: one project client and one OpenAI-compatible
         // client, reused for everything.
 
-        // Cell 2 [code]
         var projectEndpoint = context.Config.ProjectEndpoint;
         var chatModel = context.Config.ChatModel;
         var projectClient = context.CreateProjectClient();
@@ -58,18 +55,15 @@ return await LabHost.RunAsync(
 
         Console.WriteLine($"Ready to build the capstone agent on: {chatModel}");
 
-        // Cell 3 [markdown]
         // Expected output:
         //   Ready to build the capstone agent on: gpt-4.1-mini
 
-        // Cell 4 [markdown]
         // ## 2. A tool the agent can call
         //
         // Give the support agent one custom function tool - looking up an order's
         // status - exactly as in M3. In production this function would call the order
         // system; the workshop implementation is deterministic.
 
-        // Cell 5 [code]
         var orderToolParameters = BinaryData.FromObjectAsJson(
             new
             {
@@ -93,18 +87,15 @@ return await LabHost.RunAsync(
 
         Console.WriteLine("Tool defined: get_order_status");
 
-        // Cell 6 [markdown]
         // Expected output:
         //   Tool defined: get_order_status
 
-        // Cell 7 [markdown]
         // ## 3. Define the capstone agent
         //
         // Create a versioned M2 agent whose definition carries both instructions and
         // the tool. In a full build, attach the M4 Foundry IQ knowledge base to the
         // definition as well so document answers are grounded and cited.
 
-        // Cell 8 [code]
         const string agentName = "contoso-support-agent";
         ProjectsAgentDefinition definition = new DeclarativeAgentDefinition(chatModel)
         {
@@ -125,7 +116,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"Name    : {agent.Name}");
         Console.WriteLine($"Version : {agent.Version}");
 
-        // Cell 9 [markdown]
         // Expected output:
         //   Name    : contoso-support-agent
         //   Version : 1
@@ -133,22 +123,18 @@ return await LabHost.RunAsync(
         // Tool + knowledge APIs are evolving. DeclarativeAgentDefinition is the C#
         // PromptAgentDefinition surface in Azure.AI.Projects.Agents. If these shapes
         // move, re-check M3 and M4 and keep the centrally pinned package versions.
-
-        // Cell 10 [markdown]
         // ## 4. Run it - with the tool-call loop
         //
         // Invoke through Responses with agent_reference. When the model requests the
         // tool, run it locally and return function_call_output so the open response can
         // finish - the M13 function_call -> function_call_output loop.
 
-        // Cell 11 [code]
         Console.WriteLine(
             await RunSupportAsync(
                 context,
                 agent.Name,
                 "Where is my order A-1001?"));
 
-        // Cell 12 [markdown]
         // Expected output:
         //   Your order A-1001 has shipped and is expected to arrive on 2026-06-15.
         //   Is there anything else I can help you with?
@@ -156,13 +142,11 @@ return await LabHost.RunAsync(
         // Wording varies. The important workflow is get_order_status("A-1001"), the
         // deterministic stub result, and a final reply composed from that result.
 
-        // Cell 13 [markdown]
         // ## 5. Evaluate before you trust it
         //
         // A capstone agent is not done until it is measured. Score two responses for
         // relevance against the exact inline test set.
 
-        // Cell 14 [code]
         var aoaiEndpoint = context.Config.AccountUri;
         var relevance = new RelevanceJudge(context, chatModel, aoaiEndpoint);
         var cases = new[]
@@ -191,7 +175,6 @@ return await LabHost.RunAsync(
                 $"relevance = {score}/5");
         }
 
-        // Cell 15 [markdown]
         // Expected output:
         //   Where is my order A-1001?      relevance = 5/5
         //   What's the ETA on A-1002?      relevance = 4/5
@@ -205,7 +188,6 @@ return await LabHost.RunAsync(
         // chat-completions route with AAD and a strict JSON schema for the same 1-5
         // relevance contract.
 
-        // Cell 16 [markdown]
         // ## 6. Make it observable
         //
         // Finally, turn on M10 tracing so subsequent capstone runs can emit spans to
@@ -225,7 +207,6 @@ return await LabHost.RunAsync(
 
         tracerProvider?.ForceFlush();
 
-        // Cell 18 [markdown]
         // Expected output:
         //   Tracing on - capstone runs now export spans to App Insights.
         //
@@ -233,7 +214,6 @@ return await LabHost.RunAsync(
         // Responses call, including tool execution - the full picture of what the
         // agent did.
 
-        // Cell 19 [markdown]
         // ## Your turn - make it yours
         //
         // 1. Ground it for real. Attach an M4 Foundry IQ knowledge base and add a
@@ -243,7 +223,6 @@ return await LabHost.RunAsync(
         // 3. Harden + measure. Run the M12 scan against the capstone, add the
         //    worst-scoring prompts to the M9 test set, and re-evaluate.
 
-        // Cell 20 [markdown]
         // ## Where to go next
         //
         // - Hosted agents: deploy an ACR-backed containerized service.

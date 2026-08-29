@@ -9,7 +9,6 @@ using OpenAI.Responses;
 
 var offline = args.Any(arg => arg.Equals("--offline", StringComparison.OrdinalIgnoreCase));
 
-// Cell 0 [markdown]
 // # M13 - Human-in-the-Loop & REST
 //
 // First, pause an agent before an irreversible tool call and route the decision to
@@ -29,7 +28,6 @@ var offline = args.Any(arg => arg.Equals("--offline", StringComparison.OrdinalIg
 // Offline:     dotnet run --project .\labs\13-human-in-loop-rest -- --offline
 // Interactive: dotnet run --project .\labs\13-human-in-loop-rest -- --interactive
 
-// Cell 1 [code]
 Console.WriteLine($"Current date and time: {DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}");
 
 return await LabHost.RunAsync(
@@ -37,7 +35,6 @@ return await LabHost.RunAsync(
     args,
     async context =>
     {
-        // Cells 2-4 [markdown/code]
         // ## 1. Configure & build the client
         //
         // Name the agent up front because SDK and raw REST calls both reference it
@@ -56,7 +53,6 @@ return await LabHost.RunAsync(
         // Model      : gpt-4.1-mini
         // Agent name : payments-approval-agent
 
-        // Cells 5-7 [markdown/code]
         // ## 2. Define tools - and create the agent
         //
         // get_account_balance is read-only and safe to auto-run. transfer_funds is
@@ -151,7 +147,6 @@ return await LabHost.RunAsync(
             ? offlineResponses!.CreateResponseAsync
             : body => context.Rest.CreateResponseAsync(body);
 
-        // Cells 8-10 [markdown/code]
         // ## 3. The approval loop - approve & reject
         //
         // Scan each response for function_call items. Auto-execute safe tools; route
@@ -212,7 +207,6 @@ return await LabHost.RunAsync(
                 body);
         }
 
-        // Cells 11-13 [markdown/code]
         // ## 4. Drop to raw REST - single-shot
         //
         // Live requests POST to {endpoint}/openai/v1/responses with a bearer token
@@ -263,7 +257,6 @@ return await LabHost.RunAsync(
         // It refuses any approval-gated call instead of executing it unattended.
         // A name-only reference selects the latest agent version; add version to pin.
 
-        // Cells 14-16 [markdown/code]
         // ## 5. Multi-turn over REST - previous_response_id
         //
         // Do not resend history. The second body carries only the new user input and
@@ -312,7 +305,6 @@ return await LabHost.RunAsync(
         // Turn 1: Mira drifted past Saturn's rings, humming a lullaby to the dark.
         // Turn 2: A reply hummed back - and Mira realised the dark had been listening.
 
-        // Cells 17-19 [markdown/code]
         // ## 6. Streaming over REST - Server-Sent Events
         //
         // stream=true changes the content type to text/event-stream. Parse every
@@ -334,7 +326,6 @@ return await LabHost.RunAsync(
         // Tokens are short-lived. CreateRequestAsync obtains a current token for
         // every live raw request instead of retaining the section 4 token.
 
-        // Cell 20 [markdown]
         // ## Your turn
         //
         // 1. Add close_account, add it to approvalRequiredTools, ask to close

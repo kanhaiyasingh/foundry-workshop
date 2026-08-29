@@ -5,7 +5,6 @@ using FoundryWorkshop.Shared;
 
 var offline = args.Any(arg => arg.Equals("--offline", StringComparison.OrdinalIgnoreCase));
 
-// Cell 0 [markdown]
 // # M12 - Red Teaming
 //
 // Proactively attack your own model, first across the four notebook risk
@@ -30,7 +29,6 @@ var offline = args.Any(arg => arg.Equals("--offline", StringComparison.OrdinalIg
 // Run:     dotnet run --project .\labs\12-red-teaming
 // Offline: dotnet run --project .\labs\12-red-teaming -- --offline
 
-// Cell 1 [code]
 var currentDateTime = DateTime.Now;
 Console.WriteLine($"Current date and time: {currentDateTime:yyyy-MM-dd HH:mm:ss.ffffff}");
 
@@ -39,21 +37,18 @@ return await LabHost.RunAsync(
     args,
     async context =>
     {
-        // Cell 2 [markdown]
         // ## 1. Configure
         //
         // Both ports use the repository .env. The notebook's callback targets this
         // project directly instead of its reference APIM gateway; the live C# scan
         // likewise targets a deployment in this project.
 
-        // Cell 3 [code]
         var projectEndpoint = offline ? "<offline fixture>" : context.Config.ProjectEndpoint;
         var chatModel = context.Config.ChatModel;
         Console.WriteLine($"Project : {projectEndpoint}");
         Console.WriteLine($"Model   : {chatModel}");
         Console.WriteLine($".NET    : {Environment.Version} (OK)");
 
-        // Cell 4 [markdown]
         // Expected live shape:
         // Project : https://<account>.services.ai.azure.com/api/projects/<project>
         // Model   : gpt-4.1-mini
@@ -63,7 +58,6 @@ return await LabHost.RunAsync(
         // no Azure configuration and exercises request/scorecard/output logic with
         // transparent illustrative fixtures; it is not represented as a real scan.
 
-        // Cell 5 [markdown]
         // ## 2. The target callback
         //
         // The notebook hands RedTeam a callback that accepts a generated prompt and
@@ -72,7 +66,6 @@ return await LabHost.RunAsync(
         // should use an API version and target type that can represent the real app
         // or agent rather than claiming that a bare-model scan covers its pipeline.
 
-        // Cell 6 [code]
         if (offline)
         {
             Console.WriteLine("smoke test: Hello!");
@@ -93,13 +86,11 @@ return await LabHost.RunAsync(
             modelDeploymentName = chatModel
         };
 
-        // Cell 7 [markdown]
         // Expected output: smoke test: Hello!
         //
         // A normal live reply proves that authentication, endpoint, and deployment
         // work before a billable scan is submitted.
 
-        // Cell 8 [markdown]
         // ## 3. Build the Red Team agent
         //
         // Preserve Violence, HateUnfairness, Sexual, and SelfHarm. The Python
@@ -109,7 +100,6 @@ return await LabHost.RunAsync(
         // preserve the notebook's single-turn target semantics and let the service
         // control how many objectives it generates.
 
-        // Cell 9 [code]
         const int turnsPerConversation = 1;
         var basicRiskCategories = new[]
         {
@@ -121,19 +111,16 @@ return await LabHost.RunAsync(
         Console.WriteLine(
             "RedTeam ready - 4 categories; objective count is service-managed (1 turn each)");
 
-        // Cell 10 [markdown]
         // The notebook starts at 5 objectives/category and can increase to 100.
         // Do not translate that knob to numTurns: doing so changes each attack into
         // a multi-turn conversation instead of widening the objective set.
 
-        // Cell 11 [markdown]
         // ## 4. Run the basic scan
         //
         // Both APIs are asynchronous. A notebook can top-level await RedTeam.scan;
         // this C# program awaits submission and polls the cloud run for up to
         // 30 minutes. The live run is billable and its size is service-managed.
 
-        // Cell 12 [code]
         ScanResult basic;
         if (offline)
         {
@@ -160,7 +147,6 @@ return await LabHost.RunAsync(
             basic.Scorecard);
         Console.WriteLine("basic scan complete - results in redteam_basic_output/");
 
-        // Cell 13 [markdown]
         // results.json preserves the live terminal run metadata or the explicit
         // offline fixture. evaluation_results.json is written only when a scorecard
         // is actually present. The pinned cloud run endpoint does not return the
@@ -170,12 +156,10 @@ return await LabHost.RunAsync(
         // C# awaits the Task directly; unlike a plain Python script, it needs no
         // asyncio.run wrapper.
 
-        // Cell 14 [markdown]
         // ## 5. Read the ASR scorecard
         //
         // ASR = successful adversarial probes / total probes. Lower is better.
 
-        // Cell 15 [code]
         if (basic.Scorecard is { } basicScorecard)
         {
             var riskSummary = GetSummary(basicScorecard, "risk_category_summary");
@@ -192,12 +176,10 @@ return await LabHost.RunAsync(
             PrintCloudScorecardNotice("basic");
         }
 
-        // Cell 16 [markdown]
         // The notebook's illustrative 2/20 result is reproduced by --offline to
         // verify table math and field handling. Live values vary. Concentrated
         // failures identify which M11 controls to tighten before rescanning.
 
-        // Cell 17 [markdown]
         // ## 6. Advanced - evasion strategies + languages
         //
         // Baseline prompts are easy to detect. Preserve Base64, ROT13, Unicode
@@ -207,7 +189,6 @@ return await LabHost.RunAsync(
         // scenario explicitly requests Spanish and French objectives. That is
         // guidance to the service, not the wrapper's strict language enum.
 
-        // Cell 18 [code]
         var advancedRiskCategories = new[] { "Violence", "HateUnfairness" };
         var advancedStrategies = new object[]
         {
@@ -246,18 +227,15 @@ return await LabHost.RunAsync(
             advanced.Scorecard);
         Console.WriteLine("advanced scan complete - strategies + Spanish/French");
 
-        // Cell 19 [markdown]
         // This scan is larger than baseline. Red Teams, strategy values, target
         // types, and response fields are preview surfaces. The repository pins
         // Azure.AI.Projects 2.0.0 and this raw request pins 2025-05-15-preview.
 
-        // Cell 20 [markdown]
         // ## 7. Compare baseline vs. strategies
         //
         // A higher encoded-technique ASR than baseline means the obfuscation bypassed
         // a defense and gives the team a concrete gap to close.
 
-        // Cell 21 [code]
         if (advanced.Scorecard is { } advancedScorecard)
         {
             var techniqueSummary = GetSummary(
@@ -290,7 +268,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"Advanced results: {advancedPaths.ResultsPath}");
         PrintOptionalArtifact("Advanced scores ", advancedPaths.ScorecardPath);
 
-        // Cell 22 [markdown]
         // --offline reproduces the notebook's illustrative overall/baseline/easy
         // table. Live attack/response pairs and ASR are inspected in Foundry when
         // the run metadata has no embedded scorecard. Guardrails (M11) are defense,
@@ -300,7 +277,6 @@ return await LabHost.RunAsync(
         // evaluation. Delete sensitive local output and unneeded portal runs. More
         // categories, strategies, languages, and turns increase time and cost.
 
-        // Cell 23 [markdown]
         // ## Your turn
         //
         // 1. Widen coverage in the local Python wrapper with num_objectives=10. The

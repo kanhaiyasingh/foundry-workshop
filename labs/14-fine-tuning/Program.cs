@@ -4,7 +4,6 @@
 // small Phi-4-mini student for LoRA fine-tuning, and compare teacher, base, and
 // fine-tuned accuracy.
 //
-// Cell 0 [markdown]
 // Big models are accurate but expensive; small models are cheap but generic.
 // Distillation uses the teacher to label a narrow dataset, trains a small LoRA
 // adapter for the student, compares teacher/base/fine-tuned accuracy, and then loads
@@ -31,7 +30,6 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using FoundryWorkshop.Shared;
 
-// Cell 1 [code]: print the current date and time.
 Console.WriteLine($"Current date and time: {DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}");
 
 if (args.Any(arg => arg.Equals("--check", StringComparison.OrdinalIgnoreCase)))
@@ -52,14 +50,12 @@ return await LabHost.RunAsync(
     args,
     async context =>
     {
-        // Cell 2 [markdown]
         // ## 1. Configure
         //
         // The teacher is CHAT_MODEL. The student is the open-weights model that the
         // notebook fine-tunes with Olive/PEFT. Open-model licensing determines whether
         // derivative training and local distribution are permitted.
 
-        // Cell 3 [code]
         var teacherModel = context.Config.Get("CHAT_MODEL", "gpt-4.1-mini");
         var studentModel = context.Config.Get("STUDENT_MODEL", "microsoft/Phi-4-mini-instruct");
         var dataDirectory = Path.Combine(Environment.CurrentDirectory, "finetune_data");
@@ -71,7 +67,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"Student : {studentModel} (gets fine-tuned)");
         Console.WriteLine($"Train   : {Path.GetRelativePath(Environment.CurrentDirectory, trainFile).Replace('\\', '/')}");
 
-        // Cell 4 [markdown]
         // Expected output:
         //   Teacher : gpt-4.1-mini (labels the data)
         //   Student : microsoft/Phi-4-mini-instruct (gets fine-tuned)
@@ -80,20 +75,17 @@ return await LabHost.RunAsync(
         // Only the teacher is called over the API. The student id identifies the
         // open-weights model used by Olive and PEFT.
 
-        // Cell 5 [markdown]
         // ## 2. The task: a domain classifier
         //
         // Distillation needs a narrow, well-defined task. A shared rubric is used for
         // teacher labels and student prompts, and the deterministic SEVERITY/REASON
         // format makes labeling and scoring straightforward.
 
-        // Cell 6 [code]
         var example = CreateClassificationPrompt(
             "Coolant loop B pump showing degraded flow; crew swapped to backup. No crew impact.");
         Console.WriteLine($"\n{example.System[..120]} ...");
         Console.WriteLine($"\nUSER: {example.User[..90]} ...");
 
-        // Cell 7 [markdown]
         // Expected output:
         //   You are an expert ISS Flight Controller. Classify the daily station status report ...
         //
@@ -101,7 +93,6 @@ return await LabHost.RunAsync(
         //
         //   Coolant loop B pump showing degraded flow; crew swapped to backup. No ...
 
-        // Cell 8 [markdown]
         // ## 3. Distillation - the teacher generates training data
         //
         // --distill explicitly opts into two billable teacher calls per scenario:
@@ -109,7 +100,6 @@ return await LabHost.RunAsync(
         // {system,user,assistant} triple is a synthetic training example in the exact
         // format the student must learn.
 
-        // Cell 9 [code]
         TrainingRow[] rows;
         if (context.HasFlag("--distill"))
         {
@@ -143,7 +133,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"\nWrote {rows.Length} example rows -> {Path.GetRelativePath(Environment.CurrentDirectory, trainFile).Replace('\\', '/')}");
         Console.WriteLine("Real distillation: loop MakeTrainingExampleAsync over 500+ scenarios.");
 
-        // Cell 10 [markdown]
         // Expected output for the safe path:
         //   Wrote 2 example rows -> finetune_data/train.jsonl
         //   Real distillation: loop MakeTrainingExampleAsync over 500+ scenarios.
@@ -163,13 +152,11 @@ return await LabHost.RunAsync(
             $"Azure SFT conversion: {azureStats.Rows} rows, {azureStats.Messages} messages; " +
             "every row ends with assistant.");
 
-        // Cell 11 [markdown]
         // ## 4. LoRA fine-tune with Olive
         //
         // LoRA freezes the base model and trains small adapter matrices over selected
         // attention/MLP projections rather than retraining billions of weights.
 
-        // Cell 12 [code]
         // GPU REQUIRED. This cell only prints the notebook's command. It does not
         // execute Olive, download the model, allocate a GPU, or start training.
         var oliveCommand = string.Join(
@@ -187,7 +174,6 @@ return await LabHost.RunAsync(
         Console.WriteLine($"\nFine-tune command (run on a GPU host):\n\n  {oliveCommand}");
         Console.WriteLine("\n(Not executed here - see the GPU warning in the guide.)");
 
-        // Cell 13 [markdown]
         // Expected output:
         //   Fine-tune command (run on a GPU host):
         //
@@ -243,15 +229,12 @@ return await LabHost.RunAsync(
             Console.WriteLine("\nNo fine-tuning job submitted. Add --submit only when you intend to incur training cost.");
         }
 
-        // Cell 14 [markdown]
         // ## 5. Evaluate: teacher vs. base vs. student
         //
         // Evaluate all three roles on the same held-out reports. The win condition is
         // the fine-tuned student beating its base self.
 
-        // Cell 15 [code]
-        // These are the notebook's illustrative reference measurements, not values
-        // produced by this run.
+        // These are the notebook's illustrative reference measurements, not values produced by this run.
         var results = new[]
         {
             new BenchmarkResult("gpt-4.1-mini (teacher)", 0.80),
@@ -273,7 +256,6 @@ return await LabHost.RunAsync(
             $"(base {FormatPercent(results[1].Accuracy)} -> " +
             $"fine-tuned {FormatPercent(results[2].Accuracy)})");
 
-        // Cell 16 [markdown]
         // Expected output:
         //   model                        accuracy
         //   -------------------------------------
@@ -283,13 +265,11 @@ return await LabHost.RunAsync(
         //
         //   Fine-tuning gain: +5.7%  (base 45.7% -> fine-tuned 51.4%)
 
-        // Cell 17 [markdown]
         // ## 6. Load the adapter for local inference
         //
         // The notebook's payoff is offline inference: load the public base weights,
         // apply the shipped LoRA adapter, and classify without an API call.
 
-        // Cell 18 [code]
         // PEFT has no equivalent in the dependencies of this .NET workshop. The notebook's
         // local path loads the public base weights and adapter with PeftModel. This port
         // preserves the expected prompt and offers an explicit REST adaptation only when
@@ -321,7 +301,6 @@ return await LabHost.RunAsync(
                 "REASON: Rapid cabin depressurization is an immediate threat to crew safety.");
         }
 
-        // Cell 19 [markdown]
         // Expected notebook output:
         //   SEVERITY: CRITICAL
         //   REASON: Rapid cabin depressurization is an immediate threat to crew safety.
@@ -329,7 +308,6 @@ return await LabHost.RunAsync(
         // Olive and PEFT/Transformers APIs evolve; the notebook pins
         // transformers==4.53.3 and advises re-checking flags across versions.
         //
-        // Cell 20 [markdown]
         // Your Turn:
         // 1. Grow the balanced scenario set to 500+ rows and check the printed class counts.
         // 2. Increase Olive --max_steps to 200-300 and measure plateauing or overfitting.

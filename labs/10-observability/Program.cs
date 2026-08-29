@@ -41,7 +41,6 @@ const string sourceName = "FoundryWorkshop.M10";
 const string agentName = "observability-demo-agent";
 using var activitySource = new ActivitySource(sourceName);
 
-// Notebook cell: print the current date and time.
 Console.WriteLine($"Current date and time: {DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}");
 
 return await LabHost.RunAsync(
@@ -271,7 +270,7 @@ return await LabHost.RunAsync(
         //
         // Creating the eval object and enabled rule is deliberately opt-in in the console
         // port because both persist after the process exits and the rule can continue to
-        // consume evaluation capacity. The notebook cell below is otherwise unchanged.
+        // consume evaluation capacity.
         if (!context.HasFlag("--online-eval"))
         {
             Console.WriteLine();
