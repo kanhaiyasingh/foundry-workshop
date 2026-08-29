@@ -6,8 +6,9 @@
 // > **You'll use:** an Azure Monitor OpenTelemetry exporter, ActivitySource, the
 // > Responses API, and the evaluation-rules REST surface.
 //
+// Full guide: docs/modules/10-observability.md
 // Check:       dotnet run --project .\labs\10-observability -- --check
-// Trace:       dotnet run --project .\labs\10-observability
+// Run:         dotnet run --project .\labs\10-observability
 // Online eval: dotnet run --project .\labs\10-observability -- --online-eval
 //
 // ---

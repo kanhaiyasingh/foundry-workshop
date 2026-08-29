@@ -24,6 +24,11 @@ var offline = args.Any(arg => arg.Equals("--offline", StringComparison.OrdinalIg
 // Red Teams is available only in supported regions; notebook examples include East
 // US 2, Sweden Central, France Central, and Switzerland West. The notebook's Python
 // 3.10-3.13 and azure-ai-evaluation[redteam] requirements do not apply to .NET.
+//
+// Full guide: docs/modules/12-red-teaming.md
+// Check:   dotnet run --project .\labs\12-red-teaming -- --check
+// Run:     dotnet run --project .\labs\12-red-teaming
+// Offline: dotnet run --project .\labs\12-red-teaming -- --offline
 
 // Cell 1 [code]
 var currentDateTime = DateTime.Now;

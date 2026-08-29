@@ -8,10 +8,6 @@ using FoundryWorkshop.Shared;
 // quality, agent, and custom evaluators, then run a batch evaluate() that logs to
 // the Foundry portal.
 //
-// Full guide: docs/modules/09-evaluation.md
-// Check: dotnet run --project .\labs\09-evaluation -- --check
-// Run:   dotnet run --project .\labs\09-evaluation
-//
 // You'll use: the C# equivalents of azure-ai-evaluation's RelevanceEvaluator,
 // GroundednessEvaluator, IntentResolutionEvaluator, ToolCallAccuracyEvaluator,
 // a custom callable, and evaluate(...).
@@ -35,6 +31,10 @@ using FoundryWorkshop.Shared;
 // answer. The reference derives a separate admin project from a hashed subscription
 // suffix; we just reuse this project's CHAT_MODEL as the judge. If .env isn't ready,
 // complete the workshop setup first.
+
+// Full guide: docs/modules/09-evaluation.md
+// Check: dotnet run --project .\labs\09-evaluation -- --check
+// Run:   dotnet run --project .\labs\09-evaluation
 
 return await LabHost.RunAsync(
     "M9 - Evaluation",

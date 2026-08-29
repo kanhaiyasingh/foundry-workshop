@@ -22,7 +22,12 @@ var offline = args.Any(arg => arg.Equals("--offline", StringComparison.OrdinalIg
 // The named/versioned agent API is preview and is pinned by the repository.
 //
 // The notebook includes docs/assets/agent-anatomy.png as its architecture diagram.
-// See docs/modules/13-human-in-loop-rest.md for the rendered image.
+//
+// Full guide: docs/modules/13-human-in-loop-rest.md
+// Check:       dotnet run --project .\labs\13-human-in-loop-rest -- --check
+// Run:         dotnet run --project .\labs\13-human-in-loop-rest
+// Offline:     dotnet run --project .\labs\13-human-in-loop-rest -- --offline
+// Interactive: dotnet run --project .\labs\13-human-in-loop-rest -- --interactive
 
 // Cell 1 [code]
 Console.WriteLine($"Current date and time: {DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}");

@@ -24,8 +24,9 @@
 // project. Resource-writing operations go through the Azure Resource Manager REST
 // surface, matching the notebook and Foundry portal.
 //
+// Full guide: docs/modules/11-guardrails.md
 // Check:   dotnet run --project .\labs\11-guardrails -- --check
-// Preview: dotnet run --project .\labs\11-guardrails
+// Run:     dotnet run --project .\labs\11-guardrails
 // Apply:   dotnet run --project .\labs\11-guardrails -- --apply
 // Cleanup: dotnet run --project .\labs\11-guardrails -- --cleanup
 
