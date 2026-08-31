@@ -1,10 +1,10 @@
-site_name: "Microsoft Foundry Workshop for C#/.NET"
+site_name: "Microsoft Foundry: End-to-End Workshop"
 site_description: >-
-  Build enterprise AI applications and agents on Microsoft Foundry with C# and .NET 10.
-site_url: "https://malaika2820.github.io/foundry-workshop-c-/"
+  Hands-on Microsoft Foundry labs with both Python notebooks and C#/.NET projects.
+site_url: "https://kanhaiyasingh.github.io/foundry-workshop/"
 
-repo_name: "malaika2820/foundry-workshop-c-"
-repo_url: "https://github.com/malaika2820/foundry-workshop-c-"
+repo_name: "kanhaiyasingh/foundry-workshop"
+repo_url: "https://github.com/kanhaiyasingh/foundry-workshop"
 edit_uri: "edit/main/docs/"
 
 theme:
@@ -27,14 +27,22 @@ theme:
     - navigation.sections
     - navigation.top
     - navigation.tracking
+    - navigation.indexes
     - toc.follow
     - content.code.copy
     - content.code.annotate
     - search.highlight
     - search.suggest
+  icon:
+    repo: fontawesome/brands/github
 
 plugins:
   - search
+  - mkdocs-jupyter:
+      include_source: true
+      execute: false
+      ignore_h1_titles: true
+      include: ["*.ipynb"]
 
 markdown_extensions:
   - admonition
@@ -48,23 +56,46 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.highlight:
       anchor_linenums: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - toc:
       permalink: true
 
 nav:
   - Home: index.md
-  - Setup: setup.md
-  - Python reference:
-      - Setup and usage: python-reference.md
-      - Original debug log: modules/debug.md
-  - Concepts: concepts.md
+  - Setup:
+      - Python notebooks: setup.md
+      - C#/.NET projects: csharp-setup.md
+  - Concepts:
+      - Python concepts: concepts.md
+      - C#/.NET concepts: csharp-concepts.md
   - Troubleshooting: troubleshooting.md
   - Platform:
       - "What is Foundry": platform/01-what-is-foundry.md
       - "Architecture & projects": platform/02-architecture-and-projects.md
       - "Control plane & governance": platform/03-control-plane-and-governance.md
       - "MCP tool servers": platform/04-mcp-tool-servers.md
-  - Labs:
+  - Python labs:
+      - "Python track overview": python-reference.md
+      - "Python debug log": modules/debug.md
+      - "M1 · First Inference": modules/01-first-inference.ipynb
+      - "M2 · Your First Agent": modules/02-your-first-agent.ipynb
+      - "M3 · Tools & Function Calling": modules/03-tools-and-function-calling.ipynb
+      - "M4 · Grounding / RAG (Foundry IQ)": modules/04-grounding-rag-foundry-iq.ipynb
+      - "M5 · MCP Tools": modules/05-mcp-tools.ipynb
+      - "M5b · Work IQ": modules/05b-work-iq.ipynb
+      - "M6 · Agent Memory": modules/06-agent-memory.ipynb
+      - "M7 · Multi-Agent Orchestration": modules/07-multi-agent-orchestration.ipynb
+      - "M8 · Deep Research": modules/08-deep-research.ipynb
+      - "M9 · Evaluation": modules/09-evaluation.ipynb
+      - "M10 · Observability & Tracing": modules/10-observability-tracing.ipynb
+      - "M11 · Guardrails": modules/11-guardrails.ipynb
+      - "M12 · Red Teaming": modules/12-red-teaming.ipynb
+      - "M13 · Human-in-the-Loop & REST": modules/13-human-in-the-loop-and-rest.ipynb
+      - "M14 · Fine-Tuning": modules/14-fine-tuning-distillation.ipynb
+      - "M15 · Capstone": modules/15-capstone.ipynb
+  - C# labs:
       - "M1 · First Inference": modules/01-first-inference.md
       - "M2 · Your First Agent": modules/02-your-first-agent.md
       - "M3 · Tools & Function Calling": modules/03-tools-and-function-calling.md

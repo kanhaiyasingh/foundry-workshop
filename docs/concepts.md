@@ -1,75 +1,119 @@
-# Concepts
+# Concepts — the mental model
 
-The workshop has one through-line:
+This page is the thread that ties every lab together. Read it once before you start;
+come back whenever a lab makes you ask *"why are we doing this?"*
 
-> Start with one model call and finish with a grounded, tool-using, evaluated,
-> observable agent inside one Foundry project.
+The workshop has **one through-line**:
 
-The C# projects and preserved Python notebooks teach the same architectural ideas. Their
-syntax and SDK abstractions differ, but the service boundaries, identity model, resource
-requirements, and expected learning outcomes are shared.
+> **Start with a single model call, and end with a grounded, tool-using, evaluated,
+> observable agent — all inside one Foundry project.**
 
-## Clients and endpoints
+Each module adds exactly one new capability to that arc.
 
-`AIProjectClient` provides stable project/agent operations. The shared library also uses
-authenticated REST where a stable .NET wrapper does not exist.
+---
+
+## 1. Everything starts with one client
+
+You authenticate once with **`DefaultAzureCredential`** (`az login`), build an
+**`AIProjectClient`** from your project endpoint, and ask it for an OpenAI-compatible
+client. That single client gives you chat, embeddings, **and** the Responses API that
+powers agents.
 
 ![The inference path](assets/inference-path.png)
 
-Project-scoped Responses and agents use:
-
-```text
-https://<account>.services.ai.azure.com/api/projects/<project>
+```python
+project_client = AIProjectClient(endpoint=PROJECT_ENDPOINT, credential=DefaultAzureCredential())
+openai_client  = project_client.get_openai_client()
 ```
 
-Classic embeddings, fine-tuning, and some evaluator routes use the account endpoint:
+You build exactly this in **[M1 · First inference](modules/01-first-inference.ipynb)**,
+and reuse it in every lab after.
 
-```text
-https://<account>.services.ai.azure.com
-```
+---
 
-The shared `WorkshopConfig.AccountUri` derives that split consistently.
+## 2. From completions to *agents*
 
-## Agents and tools
-
-A prompt agent is a versioned model, instructions, and tool definition. Function tools
-follow a loop: receive `function_call`, validate/execute in trusted host code, return
-`function_call_output`, and let the model synthesize the final answer.
+A raw model call is stateless. A **Foundry agent** wraps a model with **instructions**
+and **tools** in a *versioned definition*, and you invoke it through the **Responses
+API**. The model can call tools, loop on their results, and return a final answer.
 
 ![Anatomy of a Foundry agent](assets/agent-anatomy.png)
 
-MCP moves tool discovery and invocation behind a standard remote protocol. Work IQ adds
-delegated Microsoft 365 permission trimming.
+- **[M2](modules/02-your-first-agent.ipynb)** — create and version an agent.
+- **[M3](modules/03-tools-and-function-calling.ipynb)** — give it tools (Code
+  Interpreter + your own functions).
+- **[M6](modules/06-agent-memory.ipynb)** — let it remember across turns.
 
-## Grounding and memory
+---
 
-RAG retrieves approved documents before generation. M4 builds Azure AI Search resources
-with the stable SDK and exposes the knowledge base through MCP.
+## 3. Grounding: agents that cite your data
 
-![Grounding with Foundry IQ](assets/rag-foundry-iq.png)
+Models hallucinate; **grounding** fixes answers to *your* corpus. You embed documents,
+index them in **Azure AI Search**, build a **Foundry IQ knowledge base**, and attach it
+to an agent so every answer is backed by citations.
 
-Memory is different: it extracts durable, scope-isolated user facts across conversations.
-The API remains preview, so M6 uses a typed C# workflow over REST.
+![Grounding with Foundry IQ (RAG)](assets/rag-foundry-iq.png)
 
-## Orchestration
+- **[M4](modules/04-grounding-rag-foundry-iq.ipynb)** — single grounded agent.
+- **[M5](modules/05-mcp-tools.ipynb)** — reach external systems through **MCP** tools.
+- **[M5b](modules/05b-work-iq.ipynb)** — ground in live, permission-aware **Work IQ** (Microsoft 365) context.
+- **[M8](modules/08-deep-research.ipynb)** — multi-step *research* over the corpus.
 
-M7 creates Microsoft Agent Framework `ChatClientAgent` instances for a router and
-specialists. Routing keeps each specialist's instructions narrow and testable.
+---
 
-![Multi-agent router](assets/multi-agent-router.png)
+## 4. Scaling out: many agents, one workflow
 
-## Trust loop
+One agent can't be expert at everything. A **router** classifies intent and dispatches
+to a **specialist** — each grounded on its own knowledge base — wired together with the
+Agent Framework's `WorkflowBuilder`.
 
-Evaluation, observability, guardrails, red teaming, and human approval provide different
-controls:
+![Multi-agent: router + specialists](assets/multi-agent-router.png)
 
-- evaluation measures quality before release;
-- tracing explains runtime behavior;
-- guardrails block known unsafe classes;
-- red teaming searches for bypasses;
-- human approval prevents irreversible tool execution without authorization.
+You build this in **[M7 · Multi-agent orchestration](modules/07-multi-agent-orchestration.ipynb)**.
 
-![Evaluation and observability](assets/eval-observability.png)
+---
 
-M14 changes the model only after a baseline and validated data exist. M15 combines the
-patterns and scores the resulting support response.
+## 5. Trust: measure, watch, and harden
+
+A demo agent and a *production* agent differ in one word: **trust**. Foundry bakes in
+the quality loop — **evaluate offline** before you ship, **observe online** after, and
+feed findings back into the agent.
+
+![Quality loop: evaluate offline, observe in production](assets/eval-observability.png)
+
+- **[M9 · Evaluation](modules/09-evaluation.ipynb)** — score quality before shipping.
+- **[M10 · Observability](modules/10-observability-tracing.ipynb)** — trace + evaluate
+  continuously in production.
+- **[M11 · Guardrails](modules/11-guardrails.ipynb)** & **[M12 · Red teaming](modules/12-red-teaming.ipynb)** —
+  block unsafe content and probe for weaknesses.
+- **[M13 · Human-in-the-loop & REST](modules/13-human-in-the-loop-and-rest.ipynb)** —
+  require approval for sensitive actions; invoke over raw REST.
+
+---
+
+## 6. Going further: customize the model itself
+
+When prompting isn't enough, **fine-tune**. In
+**[M14](modules/14-fine-tuning-distillation.ipynb)** you distill a large *teacher* model
+into a small, cheap *student* with LoRA/PEFT.
+
+---
+
+## How it all fits
+
+```
+                          ┌─────────────── one Foundry project ───────────────┐
+  M1 inference  ─►  M2 agent  ─►  M3 tools  ─►  M4 grounding  ─►  M5 MCP / M6 memory
+                                                     │
+                                                     ▼
+                                       M7 multi-agent  ─►  M8 deep research
+                                                     │
+                          ┌──────────────────────────┴──────────────────────────┐
+                       quality & trust:  M9 eval · M10 observability · M11 guardrails
+                                          M12 red-team · M13 HITL+REST · M14 fine-tune
+                          └──────────────────────────┬──────────────────────────┘
+                                                     ▼
+                                            M15 capstone (combine it all)
+```
+
+→ Start building: **[M1 · First inference](modules/01-first-inference.ipynb)**

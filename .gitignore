@@ -1,3 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
 # .NET
 **/bin/
 **/obj/
@@ -8,15 +21,30 @@ TestResults/
 
 # Environment and secrets
 .env
+.env.local
+.env-*
 .env.*
 !.env.example
+!.env.csharp.example
+.env.bak
 
-# Workshop output
+# Jupyter
+.ipynb_checkpoints/
+
+# Workshop and documentation output
 artifacts/
 eval_test_data.jsonl
 eval_results.jsonl
+docs/modules/finetune_data/
+docs/modules/redteam_advanced_output/
+docs/modules/redteam_basic_output/
+docs/modules/eval_results.jsonl
+docs/modules/eval_test_data.jsonl
 site/
 .cache/
+
+# Local backup of notebooks with outputs
+/modules-backup/
 
 # IDE / OS
 .vs/
