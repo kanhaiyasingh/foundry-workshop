@@ -20,9 +20,9 @@ link. You can also open them directly in VS Code or Jupyter.
 4. Select the **Microsoft Foundry: End-to-End Workshop** kernel.
 5. Continue through the canonical notebooks in module order.
 
-The canonical notebooks use names such as `01-first-inference.ipynb`. Files ending
-in `-yourturn.ipynb`, where present, are optional solved exercise companions. They
-are not a separate workshop path and are not required to continue to the next module.
+The canonical notebooks use names such as `01-first-inference.ipynb`. Each notebook
+ends with an inline **🧪 Your turn** exercise; work it in place before moving on to
+the next module.
 
 ## Important differences
 
