@@ -33,9 +33,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Only the documentation toolchain is needed to render the site.
-      # Notebooks are rendered from their saved outputs (execute: false),
-      # so no credentials are required in CI.
+      # Render saved notebook outputs and Markdown guides without executing Azure calls.
       - name: Install docs dependencies
         run: |
           python -m pip install --upgrade pip
