@@ -19,7 +19,7 @@ dotnet run --project .\labs\04-grounding-rag -- --check
 dotnet run --project .\labs\04-grounding-rag
 ```
 
-Source: [`labs/04-grounding-rag/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/04-grounding-rag/Program.cs)
+Source: [`labs/04-grounding-rag/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/04-grounding-rag/Program.cs)
 
 ## Code flow
 

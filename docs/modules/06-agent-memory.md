@@ -18,7 +18,7 @@ dotnet run --project .\labs\06-agent-memory -- --check
 dotnet run --project .\labs\06-agent-memory
 ```
 
-Source: [`labs/06-agent-memory/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/06-agent-memory/Program.cs)
+Source: [`labs/06-agent-memory/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/06-agent-memory/Program.cs)
 
 ## Code flow
 

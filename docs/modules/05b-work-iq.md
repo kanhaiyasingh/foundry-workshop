@@ -26,7 +26,7 @@ Pass a custom workplace question as the first non-option argument:
 dotnet run --project .\labs\05b-work-iq -- "What launch decisions were made this week?"
 ```
 
-Source: [`labs/05b-work-iq/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/05b-work-iq/Program.cs)
+Source: [`labs/05b-work-iq/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/05b-work-iq/Program.cs)
 
 ## Code flow
 

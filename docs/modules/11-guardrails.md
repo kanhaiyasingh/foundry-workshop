@@ -26,10 +26,11 @@ The three layers, all enforced *before* (and after) the model sees a token:
     The reference builds this on a separate admin project; we use **this** project.
     Everything below goes through the **Azure Resource Manager** REST surface
     (`raiBlocklists` / `raiPolicies` / `deployments`) — the same calls the Foundry
-    portal makes. If your `.env` isn't ready, do the [setup guide](../setup.md) first.
+    portal makes. If your `.env` isn't ready, do the
+    [C# setup guide](../csharp-setup.md) first.
 
 The complete C# port is in
-[`labs/11-guardrails/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/11-guardrails/Program.cs).
+[`labs/11-guardrails/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/11-guardrails/Program.cs).
 Its stages follow the notebook cells below in order. Resource-writing stages require
 `--apply`; a normal run performs only local validation.
 

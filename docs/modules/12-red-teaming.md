@@ -56,7 +56,7 @@ dotnet run --project .\labs\12-red-teaming
 configurations, strict scorecard field handling, ASR calculation, and artifact output
 with the notebook's illustrative numbers. Live mode is the real managed scan.
 
-Source: [`labs/12-red-teaming/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/12-red-teaming/Program.cs)
+Source: [`labs/12-red-teaming/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/12-red-teaming/Program.cs)
 
 The sections below preserve the notebook cells in order.
 

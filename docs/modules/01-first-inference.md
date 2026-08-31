@@ -7,7 +7,7 @@ Responses API while preserving the notebook's complete first-inference flow.
 
 ## Prerequisites
 
-- Completed [setup](../setup.md)
+- Completed [C# setup](../csharp-setup.md)
 - `PROJECT_ENDPOINT`, `CHAT_MODEL`, and `EMBEDDING_MODEL`
 - Foundry User access to both deployments
 
@@ -18,7 +18,7 @@ dotnet run --project .\labs\01-first-inference -- --check
 dotnet run --project .\labs\01-first-inference
 ```
 
-Source: [`labs/01-first-inference/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/01-first-inference/Program.cs)
+Source: [`labs/01-first-inference/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/01-first-inference/Program.cs)
 
 ## Code flow
 

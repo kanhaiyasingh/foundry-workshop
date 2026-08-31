@@ -17,7 +17,7 @@ dotnet run --project .\labs\07-multi-agent-orchestration -- --check
 dotnet run --project .\labs\07-multi-agent-orchestration
 ```
 
-Source: [`labs/07-multi-agent-orchestration/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/07-multi-agent-orchestration/Program.cs)
+Source: [`labs/07-multi-agent-orchestration/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/07-multi-agent-orchestration/Program.cs)
 
 ## Code flow
 

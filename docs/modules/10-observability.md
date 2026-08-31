@@ -28,7 +28,7 @@ agent call ─┤
 emits spans. **Continuous evaluation** is server-side: Foundry samples live responses
 and scores them automatically. This lab sets up both.
 
-Source: [`labs/10-observability/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/10-observability/Program.cs)
+Source: [`labs/10-observability/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/10-observability/Program.cs)
 
 ## Prerequisites and run modes
 
@@ -78,7 +78,8 @@ Console.WriteLine(
 
 !!! note "Where does App Insights come from?"
     Provisioning the Application Insights resource and copying its connection string
-    into `.env` is a one-time platform task — see the [setup guide](../setup.md). The
+    into `.env` is a one-time platform task — see the
+    [C# setup guide](../csharp-setup.md). The
     reference deploys it with Bicep; this lab assumes it already exists and only reads
     `APP_INSIGHTS_CONN_STRING`.
 

@@ -27,6 +27,7 @@ your APIs. Foundry supports two flavours:
 
 ## Prerequisites
 
+- Completed [C# setup](../csharp-setup.md)
 - `PROJECT_ENDPOINT` in the repository `.env`
 - A tool-capable `CHAT_MODEL`; it defaults to `gpt-4.1-mini`
 - `az login`, or another identity accepted by `DefaultAzureCredential`
@@ -55,7 +56,7 @@ dotnet run --project .\labs\03-tools-and-function-calling -- --function-only
 ```
 
 Source:
-[`labs/03-tools-and-function-calling/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/03-tools-and-function-calling/Program.cs)
+[`labs/03-tools-and-function-calling/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/03-tools-and-function-calling/Program.cs)
 
 ## 1. Configure and build the clients
 

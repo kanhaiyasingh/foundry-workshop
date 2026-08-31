@@ -25,7 +25,7 @@ dotnet run --project .\labs\05-mcp-tools -- --check
 dotnet run --project .\labs\05-mcp-tools
 ```
 
-Source: [`labs/05-mcp-tools/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/05-mcp-tools/Program.cs)
+Source: [`labs/05-mcp-tools/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/05-mcp-tools/Program.cs)
 
 ## Code flow
 

@@ -50,7 +50,7 @@ approval and rejection branches, safe-tool execution, `function_call_output`,
 `previous_response_id`, output-text aggregation, and SSE parsing. It is not
 represented as a live Foundry response.
 
-Source: [`labs/13-human-in-loop-rest/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/13-human-in-loop-rest/Program.cs)
+Source: [`labs/13-human-in-loop-rest/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/13-human-in-loop-rest/Program.cs)
 
 The first notebook code cell prints the current date and time:
 
