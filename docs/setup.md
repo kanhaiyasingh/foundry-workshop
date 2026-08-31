@@ -1,11 +1,8 @@
-# Python notebook setup
+# Setup — do this before the workshop
 
 This takes about **15–20 minutes**. You'll install the toolchain, create a Foundry
 project with a couple of model deployments, and run a smoke test that proves your
 environment can reach Foundry.
-
-This page is for the **Python notebook track**. For C#/.NET, use the separate
-[C# setup guide](csharp-setup.md).
 
 !!! info "Two kinds of dependency"
     - To **read or build this site**, you only need the docs toolchain (`".[docs]"`).
@@ -95,7 +92,7 @@ kernel.
 
 ## 4. Configure your environment
 
-Copy the Python template and fill in your values. **Every Python lab loads these exact variable
+Copy the template and fill in your values. **Every lab loads these exact variable
 names** via `python-dotenv`, so set them once here:
 
 ```bash
