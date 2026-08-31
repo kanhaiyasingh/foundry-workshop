@@ -1,7 +1,7 @@
 # Microsoft Foundry Workshop for C#/.NET
 
 An end-to-end, participant-ready workshop for building enterprise AI applications and
-agents on **Microsoft Foundry** with **C# and .NET 8**.
+agents on **Microsoft Foundry** with **C# and .NET 10**.
 
 The journey starts with one Responses API call and ends with a grounded, tool-using,
 evaluated, observable support agent. All numbered labs M1-M15, including M5b, are
@@ -33,7 +33,7 @@ unless the facilitator has assigned unique resource names.
 ```text
 FoundryWorkshop.sln
 ├── src/FoundryWorkshop.Shared/       configuration, identity, REST, SSE, JSON
-├── labs/01-first-inference/          one .NET 8 console project per lab
+├── labs/01-first-inference/          one .NET 10 console project per lab
 │   └── ...
 ├── labs/15-capstone/
 └── docs/                             MkDocs participant guides

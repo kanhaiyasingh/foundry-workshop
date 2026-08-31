@@ -2,7 +2,8 @@
 
 ## Build and package guidance
 
-The workshop targets `net8.0`; install the .NET 8 SDK even if a newer SDK is present.
+The workshop targets `net10.0`; install the .NET 10 SDK. Visual Studio users need
+Visual Studio 2026 because Visual Studio 2022 cannot target .NET 10.
 Package versions are pinned centrally in `Directory.Packages.props`. Restore the whole
 solution after a package change:
 

@@ -55,5 +55,5 @@ question invokes the router and one specialist, consuming two model calls.
 
 ## Parity and preview caveats
 
-The orchestration uses stable Microsoft Agent Framework 1.15 abstractions on .NET 8.
+The orchestration uses stable Microsoft Agent Framework 1.15 abstractions on .NET 10.
 Foundry-specific hosted-agent packages are not needed for this local console workflow.

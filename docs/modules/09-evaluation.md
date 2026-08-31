@@ -9,7 +9,7 @@ run for portal inspection.
 
 ## Prerequisites
 
-- .NET 8
+- .NET 10
 - `PROJECT_ENDPOINT` in the repository `.env`
 - `CHAT_MODEL` for LLM judging, defaulting exactly to `gpt-4.1-mini`
 - Foundry User access and `az login`

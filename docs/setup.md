@@ -8,10 +8,10 @@ If you want to run the preserved notebooks instead, follow the separate
 
 Windows participants need:
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [Azure CLI 2.60 or later](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Git](https://git-scm.com/downloads)
-- VS Code with the C# Dev Kit, or Visual Studio 2022, is recommended
+- VS Code with the C# Dev Kit, or Visual Studio 2026, is recommended
 - An Azure subscription allowed to use Microsoft Foundry
 
 ```powershell
@@ -20,8 +20,8 @@ az version
 git --version
 ```
 
-Confirm that `dotnet --list-sdks` includes an `8.0.x` SDK. A newer runtime by itself is
-not sufficient. macOS/Linux uses the same validation commands in a shell.
+Confirm that `dotnet --list-sdks` includes a `10.0.x` SDK. Installing only the .NET 10
+runtime is not sufficient. macOS/Linux uses the same validation commands in a shell.
 
 ## 2. Get the code and build it
 

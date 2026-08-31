@@ -1,7 +1,7 @@
 # Microsoft Foundry Workshop for C#/.NET
 
 Build an enterprise AI application from first inference through production quality
-controls using **C#**, **.NET 8**, and **Microsoft Foundry**.
+controls using **C#**, **.NET 10**, and **Microsoft Foundry**.
 
 This fork uses **C#/.NET as the primary hands-on track**. The original Python notebooks
 and generators remain in the repository as an optional [reference track](python-reference.md);

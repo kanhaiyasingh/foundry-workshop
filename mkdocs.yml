@@ -1,6 +1,6 @@
 site_name: "Microsoft Foundry Workshop for C#/.NET"
 site_description: >-
-  Build enterprise AI applications and agents on Microsoft Foundry with C# and .NET 8.
+  Build enterprise AI applications and agents on Microsoft Foundry with C# and .NET 10.
 site_url: "https://malaika2820.github.io/foundry-workshop-c-/"
 
 repo_name: "malaika2820/foundry-workshop-c-"
