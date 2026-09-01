@@ -28,7 +28,7 @@ teacher (gpt-4.1-mini) --generates labelled data--> train.jsonl
 > `--submit`, and `--infer` are separate explicit gates for billable REST calls.
 > The default run is local and safe.
 
-Source: [`labs/14-fine-tuning/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/14-fine-tuning/Program.cs)
+Source: [`labs/14-fine-tuning/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/14-fine-tuning/Program.cs)
 
 Like the notebook's first code cell, the program timestamps the run:
 

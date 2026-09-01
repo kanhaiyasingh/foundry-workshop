@@ -87,6 +87,12 @@ pip install -e .
 python -m ipykernel install --user --name foundry-workshop \
   --display-name "Microsoft Foundry: End-to-End Workshop"
 cp .env.example .env                   # Windows: Copy-Item .env.example .env
+```
+
+Open `.env` and replace the placeholder values for your subscription, Foundry project
+endpoint, and model deployment names. Do not continue until those values are set.
+
+```bash
 az login
 ```
 
@@ -102,6 +108,13 @@ Choose this path if you selected **C#/.NET** above.
 git clone https://github.com/kanhaiyasingh/foundry-workshop.git
 Set-Location foundry-workshop
 Copy-Item .env.csharp.example .env
+notepad .env
+```
+
+Replace the placeholder values for your subscription, Foundry project endpoint, and
+model deployment names. Save `.env` before continuing.
+
+```powershell
 az login
 dotnet restore .\FoundryWorkshop.sln
 dotnet build .\FoundryWorkshop.sln --no-restore

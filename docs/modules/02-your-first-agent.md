@@ -18,7 +18,8 @@ name while the agent evolves.
 
 ![Anatomy of a Foundry agent](../assets/agent-anatomy.png)
 
-If your project and `.env` are not ready, complete [Setup](../setup.md) first.
+If your project and `.env` are not ready, complete
+[C# setup](../csharp-setup.md) first.
 
 ## Run
 
@@ -27,7 +28,7 @@ dotnet run --project .\labs\02-your-first-agent -- --check
 dotnet run --project .\labs\02-your-first-agent
 ```
 
-Source: [`labs/02-your-first-agent/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/02-your-first-agent/Program.cs)
+Source: [`labs/02-your-first-agent/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/02-your-first-agent/Program.cs)
 
 ## 1. Configure
 

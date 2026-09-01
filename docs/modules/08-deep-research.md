@@ -48,7 +48,7 @@ dotnet run --project .\labs\08-deep-research -- --check
 dotnet run --project .\labs\08-deep-research
 ```
 
-Source: [`labs/08-deep-research/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/08-deep-research/Program.cs)
+Source: [`labs/08-deep-research/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/08-deep-research/Program.cs)
 
 ## Code flow
 

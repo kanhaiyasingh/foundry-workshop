@@ -29,7 +29,7 @@ dotnet run --project .\labs\09-evaluation
 The run uses the configured judge with strict JSON-schema output, then submits the
 same dataset to Foundry Evals REST and polls for the portal report URL.
 
-Source: [`labs/09-evaluation/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/09-evaluation/Program.cs)
+Source: [`labs/09-evaluation/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/09-evaluation/Program.cs)
 
 ## Flow restored from the notebook
 

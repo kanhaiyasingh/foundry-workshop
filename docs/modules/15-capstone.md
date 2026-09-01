@@ -20,7 +20,7 @@ enterprise topics this workshop deliberately kept out of your way.
 > - is **evaluated** for quality before we trust it ([M9](09-evaluation.md)),
 > - and is **traced** so we can watch it in production ([M10](10-observability.md)).
 
-Source: [`labs/15-capstone/Program.cs`](https://github.com/malaika2820/foundry-workshop-c-/blob/main/labs/15-capstone/Program.cs)
+Source: [`labs/15-capstone/Program.cs`](https://github.com/kanhaiyasingh/foundry-workshop/blob/main/labs/15-capstone/Program.cs)
 
 ## 1. Bootstrap (the pattern you now know by heart)
 
