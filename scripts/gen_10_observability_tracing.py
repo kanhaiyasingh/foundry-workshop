@@ -175,7 +175,7 @@ print("agent         :", agent.name, "v" + str(agent.version))"""),
     openai_client : ready
     agent         : observability-demo-agent v1
     ```
-    A `403` here means your identity lacks the **Azure AI Developer** role; a credential
+    A `403` here means your identity lacks the **Foundry User** role; a credential
     error means `az login`. Same bootstrap as every lab — only the instrumentation before it
     is new."""),
 

@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -300,10 +301,9 @@ static async Task<JsonElement> RunScanAsync(
 {
     const string apiVersion = "2025-05-15-preview";
     using var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(2) };
-    using var created = await SendRedTeamJsonAsync(
+    using var created = await SubmitRedTeamRunAsync(
         context,
         httpClient,
-        HttpMethod.Post,
         $"redTeams/runs:run?api-version={apiVersion}",
         new
         {
@@ -350,6 +350,40 @@ static async Task<JsonElement> RunScanAsync(
 
     throw new TimeoutException(
         $"Red team run {runId} did not finish within 30 minutes.");
+}
+
+static async Task<JsonDocument> SubmitRedTeamRunAsync(
+    WorkshopContext context,
+    HttpClient httpClient,
+    string relativePath,
+    object body)
+{
+    for (var attempt = 1; attempt <= 5; attempt++)
+    {
+        try
+        {
+            return await SendRedTeamJsonAsync(
+                context,
+                httpClient,
+                HttpMethod.Post,
+                relativePath,
+                body);
+        }
+        catch (HttpRequestException ex) when (
+            attempt < 5 &&
+            ex.StatusCode == HttpStatusCode.InternalServerError &&
+            ex.Message.Contains("AcaSessionInitiationFailed", StringComparison.OrdinalIgnoreCase) &&
+            ex.Message.Contains("429", StringComparison.OrdinalIgnoreCase))
+        {
+            var delay = TimeSpan.FromSeconds(15 * Math.Pow(2, attempt - 1));
+            Console.WriteLine(
+                $"Red Teams capacity is busy; retrying submission in {delay.TotalSeconds:0}s " +
+                $"(attempt {attempt + 1}/5).");
+            await Task.Delay(delay);
+        }
+    }
+
+    throw new InvalidOperationException("Red Teams run submission retry loop ended unexpectedly.");
 }
 
 static async Task<JsonDocument> SendRedTeamJsonAsync(

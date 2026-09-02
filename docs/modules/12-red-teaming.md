@@ -259,6 +259,11 @@ advanced scan complete - strategies + Spanish/French
 > surfaces. This lab pins `Azure.AI.Projects` 2.0.0 and REST API
 > `2025-05-15-preview`. Recheck the current contract before upgrading either.
 
+If the service reports `AcaSessionInitiationFailed` with an inner `429 Too Many
+Requests`, the regional Red Teams ACA session pool is temporarily at capacity. The
+C# runner retries this specific transient failure up to five times with exponential
+backoff; unrelated submission errors are surfaced immediately.
+
 ## 7. Compare baseline with strategies
 
 When the scorecard is available, the attack-technique summary reveals whether

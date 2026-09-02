@@ -41,31 +41,55 @@ Console.WriteLine($"Current date and time: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff
 ## 1. Configure
 
 Same `.env` as every lab. We derive the **Content Safety account** name from your
-`PROJECT_ENDPOINT` hostname and look up its **resource group** with one `az` call —
-so there are no extra variables to set. The guardrailed deployment reuses your
-`CHAT_MODEL` as its base.
+`PROJECT_ENDPOINT` hostname. The resource-changing modes also require
+`AZURE_RESOURCE_GROUP` to identify the resource group containing that account.
+The guardrailed deployment reads and reuses the model/version pair behind the existing
+`CHAT_MODEL` deployment, so participants do not need to hardcode a regional model version.
 
 ```csharp
 var projectEndpoint = context.Config.ProjectEndpoint;
 var chatModel = context.Config.ChatModel;
 var subscription = context.Config.Require("AZURE_SUBSCRIPTION_ID");
-
 var account = context.Config.ProjectUri.Host.Split('.')[0];
 var changesAzure = context.HasFlag("--apply") || context.HasFlag("--cleanup");
 var resourceGroup = changesAzure
-    ? await ResolveResourceGroupAsync(account)
+    ? context.Config.Require(
+        "AZURE_RESOURCE_GROUP",
+        "Set it to the resource group containing the Foundry account.")
     : "<resolved during --apply>";
 
 const string blocklistName = "bank-demo-blocklist";
 const string policyName = "bank-guardrails-policy";
-const string deploymentName = "gpt-4.1-mini-guardrails";
-const string baseModelVersion = "2025-04-14";
+var deploymentName = $"{chatModel}-guardrails";
+var baseModelName = chatModel;
+var baseModelVersion = "<resolved from CHAT_MODEL deployment during --apply>";
 const string agentName = "contoso-bank-agent";
 const string apiVersion = "2024-10-01";
 
+var accountPath =
+    $"https://management.azure.com/subscriptions/{subscription}/resourceGroups/{resourceGroup}" +
+    $"/providers/Microsoft.CognitiveServices/accounts/{account}";
+
+if (context.HasFlag("--apply"))
+{
+    using var sourceDeployment = await ArmAsync(
+        context,
+        HttpMethod.Get,
+        accountPath,
+        $"/deployments/{Uri.EscapeDataString(chatModel)}",
+        apiVersion);
+    var sourceModel = sourceDeployment.RootElement
+        .GetProperty("properties")
+        .GetProperty("model");
+    baseModelName = sourceModel.GetProperty("name").GetString()
+        ?? throw new JsonException("CHAT_MODEL deployment omitted its model name.");
+    baseModelVersion = sourceModel.GetProperty("version").GetString()
+        ?? throw new JsonException("CHAT_MODEL deployment omitted its model version.");
+}
+
 Console.WriteLine($"Account    : {account}");
 Console.WriteLine($"Resource gp: {resourceGroup}");
-Console.WriteLine($"Base model : {chatModel} {baseModelVersion}");
+Console.WriteLine($"Base model : {baseModelName} {baseModelVersion}");
 Console.WriteLine($"Deployment : {deploymentName}");
 ```
 
@@ -73,11 +97,11 @@ Console.WriteLine($"Deployment : {deploymentName}");
     ```text
     Account    : <account>
     Resource gp: rg-foundry-workshop
-    Base model : gpt-4.1-mini 2025-04-14
-    Deployment : gpt-4.1-mini-guardrails
+    Base model : <CHAT_MODEL model name> <CHAT_MODEL model version>
+    Deployment : <CHAT_MODEL deployment>-guardrails
     ```
-    An empty resource group means `az login` hasn't run or your identity can't list
-    Cognitive Services accounts — fix that before continuing.
+    Set `AZURE_RESOURCE_GROUP` to the resource group containing the Foundry account
+    before using `--apply` or `--cleanup`.
 
 Run the non-mutating checks before applying the lab:
 
@@ -297,7 +321,7 @@ using var deploymentRequest = await ArmAsync(
         sku = new { name = "GlobalStandard", capacity = 30 },
         properties = new
         {
-            model = new { name = chatModel, format = "OpenAI", version = baseModelVersion },
+            model = new { name = baseModelName, format = "OpenAI", version = baseModelVersion },
             raiPolicyName = policyName
         }
     });
@@ -338,7 +362,7 @@ Console.WriteLine($"Agent      : {agent.Name} version {agent.Version}");
 
 !!! note "Expected output"
     ```text
-    Deployment : gpt-4.1-mini-guardrails -> Succeeded
+    Deployment : <CHAT_MODEL deployment>-guardrails -> Succeeded
     Agent      : contoso-bank-agent version 1
     ```
 
@@ -423,12 +447,11 @@ create the notebook's persistent resources:
 dotnet run --project .\labs\11-guardrails -- --apply
 ```
 
-The identity needs **Azure AI Developer** on the project to create and invoke the
-agent, and **Cognitive Services Contributor** (or Contributor) on the account to
-author RAI blocklists, policies, and deployments. The dedicated
-`gpt-4.1-mini-guardrails` deployment uses `GlobalStandard` capacity `30`, reserves
-quota, and may incur charges. The blocklist and policy persist but do not reserve
-model capacity.
+The identity needs **Foundry User** to create and invoke the agent, plus
+**Contributor** on the Foundry account or its resource group to author RAI blocklists,
+policies, and deployments. The `<CHAT_MODEL deployment>-guardrails` deployment uses
+`GlobalStandard` capacity `30`, reserves quota, and may incur charges. The blocklist
+and policy persist but do not reserve model capacity.
 
 Delete the agent first, then the deployment, policy, eight blocklist items, and
 blocklist:

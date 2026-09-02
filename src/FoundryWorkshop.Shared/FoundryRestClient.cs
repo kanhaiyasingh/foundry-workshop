@@ -48,6 +48,20 @@ public sealed class FoundryRestClient : IDisposable
             FoundryScope,
             cancellationToken);
 
+    public Task<JsonDocument> SendProjectJsonAsync(
+        HttpMethod method,
+        string relativePath,
+        object? body,
+        IReadOnlyDictionary<string, string> headers,
+        CancellationToken cancellationToken = default) =>
+        SendJsonAsync(
+            method,
+            new Uri($"{_config.ProjectEndpoint.TrimEnd('/')}/{relativePath.TrimStart('/')}"),
+            body,
+            FoundryScope,
+            cancellationToken,
+            headers);
+
     public Task<JsonDocument> SendArmJsonAsync(
         HttpMethod method,
         Uri uri,
@@ -60,9 +74,18 @@ public sealed class FoundryRestClient : IDisposable
         Uri uri,
         object? body,
         string scope,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        IReadOnlyDictionary<string, string>? headers = null)
     {
         using var request = await CreateRequestAsync(method, uri, scope, cancellationToken);
+        if (headers is not null)
+        {
+            foreach (var (name, value) in headers)
+            {
+                request.Headers.TryAddWithoutValidation(name, value);
+            }
+        }
+
         if (body is not null)
         {
             request.Content = new StringContent(

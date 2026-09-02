@@ -163,7 +163,7 @@ return await LabHost.RunAsync(
         //     openai_client : ready
         //     agent         : observability-demo-agent v1
         //
-        // A `403` here means your identity lacks the **Azure AI Developer** role; a
+        // A `403` here means your identity lacks the **Foundry User** role; a
         // credential error means `az login`. Same bootstrap as every lab — only the
         // instrumentation before it is new.
 
@@ -311,19 +311,23 @@ return await LabHost.RunAsync(
 
         using var rule = await context.Rest.SendProjectJsonAsync(
             HttpMethod.Put,
-            "evaluation_rules/continuous-relevance-rule-demo?api-version=2025-05-15-preview",
+            "evaluationrules/continuous-relevance-rule-demo?api-version=v1",
             new
             {
-                display_name = "Continuous Relevance (observability demo)",
+                displayName = "Continuous Relevance (observability demo)",
                 action = new
                 {
-                    type = "continuous",
-                    eval_id = evaluationId,
-                    max_hourly_runs = 100
+                    type = "continuousEvaluation",
+                    evalId = evaluationId,
+                    maxHourlyRuns = 100
                 },
-                event_type = "response_completed",
-                filter = new { agent_name = agent.Name },
+                eventType = "responseCompleted",
+                filter = new { agentName = agent.Name },
                 enabled = true
+            },
+            new Dictionary<string, string>
+            {
+                ["Foundry-Features"] = "Evaluations=V1Preview"
             });
         var ruleId = GetOptionalString(rule.RootElement, "id")
             ?? "continuous-relevance-rule-demo";
