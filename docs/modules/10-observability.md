@@ -34,7 +34,7 @@ Source: [`labs/10-observability/Program.cs`](https://github.com/kanhaiyasingh/fo
 
 - `PROJECT_ENDPOINT` and the normal optional `CHAT_MODEL` setting.
 - The full `APP_INSIGHTS_CONN_STRING` for an Application Insights resource.
-- **Azure AI Developer** on the project to create and invoke the demo agent.
+- **Foundry User** on the Foundry resource to create and invoke the demo agent.
 - **Foundry User** for the project's managed identity when using continuous
   evaluation.
 
@@ -180,7 +180,7 @@ activity and adds model, agent name, version, status, and error details.
     agent         : observability-demo-agent v1
     ```
 
-    A `403` here means the identity lacks the **Azure AI Developer** role; a credential
+    A `403` here means the identity lacks the **Foundry User** role; a credential
     error means `az login`. The bootstrap is the same as every lab — only the
     instrumentation before it is new.
 
@@ -327,19 +327,23 @@ Console.WriteLine($"eval object : {evaluationId}");
 
 using var rule = await context.Rest.SendProjectJsonAsync(
     HttpMethod.Put,
-    "evaluation_rules/continuous-relevance-rule-demo?api-version=2025-05-15-preview",
+    "evaluationrules/continuous-relevance-rule-demo?api-version=v1",
     new
     {
-        display_name = "Continuous Relevance (observability demo)",
+        displayName = "Continuous Relevance (observability demo)",
         action = new
         {
-            type = "continuous",
-            eval_id = evaluationId,
-            max_hourly_runs = 100
+            type = "continuousEvaluation",
+            evalId = evaluationId,
+            maxHourlyRuns = 100
         },
-        event_type = "response_completed",
-        filter = new { agent_name = agent.Name },
+        eventType = "responseCompleted",
+        filter = new { agentName = agent.Name },
         enabled = true
+    },
+    new Dictionary<string, string>
+    {
+        ["Foundry-Features"] = "Evaluations=V1Preview"
     });
 ```
 
